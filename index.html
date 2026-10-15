@@ -1,0 +1,1601 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Unofficial timed practice exam for the Adobe Experience Manager Business Practitioner Professional certification (AD0-E138), with section scores and explained answers.">
+<title>AEM Business Practitioner Mock Exam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap">
+<style>
+/* Layout: a proctored exam console. Sticky status bar with timer, a reading column for the
+   question, and a question navigator rail on the right that drops below the question on phones. */
+:root {
+  --bg: #f3f5f8;
+  --surface: #ffffff;
+  --sunken: #e9edf3;
+  --ink: #161a22;
+  --muted: #586174;
+  --line: #d6dce6;
+  --accent: #2447c4;
+  --accent-ink: #ffffff;
+  --accent-soft: #e4e9fb;
+  --ok: #13744a;
+  --ok-soft: #e1f2e9;
+  --bad: #b3302a;
+  --bad-soft: #fae6e4;
+  --flag: #946000;
+  --flag-soft: #f9eed6;
+  --code-bg: #eef1f6;
+  --scrim: rgb(10 14 22 / .5);
+  --font-display: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "Source Code Pro", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1117; --surface: #161a22; --sunken: #1d222c; --ink: #e7eaf0; --muted: #98a1b3; --line: #2a303c;
+    --accent: #8ea3ff; --accent-ink: #0e1117; --accent-soft: #1e2744;
+    --ok: #5cc890; --ok-soft: #14271d; --bad: #ff8a7e; --bad-soft: #2e1918; --flag: #f0b54a; --flag-soft: #2b2312;
+    --code-bg: #11151c; --scrim: rgb(0 0 0 / .6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1117; --surface: #161a22; --sunken: #1d222c; --ink: #e7eaf0; --muted: #98a1b3; --line: #2a303c;
+  --accent: #8ea3ff; --accent-ink: #0e1117; --accent-soft: #1e2744;
+  --ok: #5cc890; --ok-soft: #14271d; --bad: #ff8a7e; --bad-soft: #2e1918; --flag: #f0b54a; --flag-soft: #2b2312;
+  --code-bg: #11151c; --scrim: rgb(0 0 0 / .6);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 1.0625rem/1.55 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-underline-offset: .18em; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+code {
+  font-family: var(--font-mono); font-size: .86em;
+  background: var(--code-bg); border: 1px solid var(--line);
+  padding: .02em .32em; border-radius: 4px; overflow-wrap: anywhere;
+}
+
+/* ---------- Status bar ---------- */
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.bar-in {
+  max-width: 74rem; margin: 0 auto; padding: .65rem max(16px, 3vw);
+  display: flex; align-items: center; gap: 1rem; min-height: 3.25rem;
+}
+.brand {
+  font: 600 .85rem var(--font-mono); letter-spacing: .03em; color: var(--ink);
+  background: none; border: 0; padding: .25rem 0; cursor: pointer; white-space: nowrap;
+}
+.brand b { color: var(--accent); font-weight: 600; }
+.bar-note { font: 500 .78rem var(--font-mono); color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.bar-spacer { flex: 1; }
+.progress { flex: 1; height: 5px; background: var(--sunken); border-radius: 3px; overflow: hidden; min-width: 3rem; }
+.progress > span { display: block; height: 100%; background: var(--accent); transition: width .25s ease; }
+.timer { font: 600 1.05rem var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.timer.warn { color: var(--bad); }
+
+/* ---------- Page frame ---------- */
+.wrap { max-width: 74rem; margin: 0 auto; padding-inline: max(16px, 3vw); padding-block: 2rem 4rem; }
+.eyebrow {
+  font: 500 .76rem/1.4 var(--font-mono); letter-spacing: .06em; text-transform: uppercase;
+  color: var(--muted); margin: 0;
+}
+h1, h2, h3 { text-wrap: balance; }
+.row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  font: 600 .95rem/1.2 var(--font-body); padding: .65rem 1.1rem; border-radius: 7px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer;
+  display: inline-flex; align-items: center; gap: .45rem;
+}
+.btn:hover { border-color: var(--muted); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { border-color: var(--accent); filter: brightness(1.08); }
+.btn:disabled { opacity: .45; cursor: not-allowed; filter: none; }
+.btn-flag[aria-pressed="true"] { background: var(--flag-soft); border-color: var(--flag); color: var(--flag); }
+.btn-quiet { background: transparent; border-color: transparent; color: var(--muted); padding-inline: .5rem; }
+.btn-quiet:hover { color: var(--ink); border-color: transparent; }
+
+/* ---------- Home ---------- */
+.intro { display: grid; gap: 1rem; max-width: 50rem; }
+.intro h1 { font: 600 clamp(2.1rem, 5.2vw, 3.25rem)/1.08 var(--font-display); letter-spacing: -.015em; margin: 0; }
+.lede { margin: 0; color: var(--muted); font-size: 1.12rem; max-width: 42rem; }
+.facts { display: flex; flex-wrap: wrap; gap: 1.25rem 2.75rem; margin: .75rem 0 0; }
+.facts > div { display: flex; flex-direction: column-reverse; }
+.facts dt { font: 500 .74rem var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.facts dd { margin: 0; font: 600 2rem/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
+
+.banner {
+  margin-top: 2rem; background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 1rem 1.25rem; display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; align-items: center; justify-content: space-between;
+}
+.banner p { margin: 0; }
+
+.modes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr)); gap: 1rem; margin-top: 2rem; }
+.mode {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; min-width: 0;
+}
+.mode h2 { font: 600 1.45rem/1.2 var(--font-display); margin: 0; }
+.mode p { margin: 0; color: var(--muted); }
+.mode .btn { align-self: flex-start; margin-top: auto; }
+.mode-primary { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.picks { border: 0; padding: 0; margin: 0; display: grid; gap: .35rem; }
+.picks legend { font: 500 .74rem var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: .4rem; padding: 0; }
+.check {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: .6rem; align-items: center;
+  padding: .35rem .5rem; border-radius: 6px; cursor: pointer;
+}
+.check:hover { background: var(--sunken); }
+.check input { accent-color: var(--accent); width: 1rem; height: 1rem; margin: 0; }
+.field { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+.field span { font: 500 .74rem var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+select {
+  font: 500 .95rem var(--font-body); color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 6px; padding: .45rem .6rem;
+}
+.err { color: var(--bad); margin: 0; font-weight: 600; font-size: .95rem; }
+
+.block { margin-top: 3.5rem; display: grid; gap: 1rem; }
+.block-head { display: grid; gap: .35rem; }
+.block h2 { font: 600 1.6rem/1.2 var(--font-display); margin: 0; }
+.block-head p { margin: 0; color: var(--muted); max-width: 46rem; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 40rem; font-size: .96rem; }
+th, td { text-align: left; padding: .85rem 1rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font: 500 .72rem var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sec-name { font-weight: 700; }
+.objs { list-style: none; margin: .35rem 0 0; padding: 0; color: var(--muted); font-size: .9rem; display: grid; gap: .15rem; }
+.objs .mono { color: var(--ink); margin-right: .4rem; font-size: .82rem; }
+.wbar { display: block; width: 6rem; height: 6px; border-radius: 3px; background: var(--sunken); margin-top: .45rem; overflow: hidden; }
+.wbar > span { display: block; height: 100%; background: var(--accent); }
+.note { font-size: .92rem; color: var(--muted); margin: 0; }
+
+.hist { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.hist li {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 1rem; align-items: center;
+  padding: .75rem 1rem; border-bottom: 1px solid var(--line);
+}
+.hist li:last-child { border-bottom: 0; }
+.hist .when { color: var(--muted); font-size: .92rem; }
+.empty { border: 1px dashed var(--line); border-radius: 12px; padding: 1.25rem; color: var(--muted); margin: 0; }
+
+.foot { margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; display: grid; gap: .5rem; max-width: 52rem; }
+.foot p { margin: 0; }
+
+/* ---------- Chips ---------- */
+.chip {
+  font: 600 .7rem/1 var(--font-mono); letter-spacing: .05em; text-transform: uppercase;
+  padding: .32rem .55rem; border-radius: 99px; white-space: nowrap; display: inline-block;
+}
+.chip.ok { background: var(--ok-soft); color: var(--ok); }
+.chip.bad { background: var(--bad-soft); color: var(--bad); }
+.chip.skip { background: var(--sunken); color: var(--muted); }
+.chip.flag { background: var(--flag-soft); color: var(--flag); }
+
+/* ---------- Exam console ---------- */
+.run { display: grid; grid-template-columns: minmax(0, 1fr) 17.5rem; gap: 2.5rem; align-items: start; }
+.qpane { min-width: 0; display: grid; gap: 1.1rem; max-width: 48rem; }
+.qtext { font: 500 1.4rem/1.45 var(--font-display); margin: 0; letter-spacing: -.005em; }
+.qtext:focus { outline: none; }
+.qtext.sm { font-size: 1.12rem; }
+.hint { margin: 0; font-weight: 600; color: var(--muted); font-size: .95rem; }
+.hint.multi { color: var(--accent); }
+.code { margin: 0; background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px; overflow-x: auto; }
+.code-lang { display: block; font: 500 .68rem var(--font-mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); padding: .6rem 1rem 0; }
+.code code { display: block; background: none; border: 0; padding: .45rem 1rem .85rem; font-size: .86rem; line-height: 1.6; white-space: pre; overflow-wrap: normal; }
+
+.opts { border: 0; margin: 0; padding: 0; display: grid; gap: .6rem; min-width: 0; }
+.opt {
+  display: grid; grid-template-columns: 1.6rem minmax(0, 1fr) auto; gap: .8rem; align-items: start;
+  padding: .85rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  cursor: pointer; transition: border-color .12s ease, background-color .12s ease;
+}
+.opt:hover { border-color: color-mix(in srgb, var(--accent) 60%, var(--line)); }
+.opt input { position: absolute; opacity: 0; pointer-events: none; }
+.opt:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.opt-key {
+  font: 600 .78rem/1.6rem var(--font-mono); text-align: center; color: var(--muted);
+  border: 1px solid var(--line); height: 1.6rem; border-radius: 5px; background: var(--bg);
+}
+.multi-set .opt-key { border-radius: 5px; }
+.single-set .opt-key { border-radius: 50%; }
+.opt-text { padding-top: .1rem; min-width: 0; }
+.opt-mark { font: 600 .7rem/1.6rem var(--font-mono); letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; }
+.opt.picked { border-color: var(--accent); background: var(--accent-soft); }
+.opt.picked .opt-key { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.opt.right { border-color: var(--ok); background: var(--ok-soft); }
+.opt.right .opt-key { background: var(--ok); border-color: var(--ok); color: var(--surface); }
+.opt.right .opt-mark { color: var(--ok); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.opt.wrong .opt-key { background: var(--bad); border-color: var(--bad); color: var(--surface); }
+.opt.wrong .opt-mark { color: var(--bad); }
+.opt.locked { cursor: default; }
+
+.feedback { display: grid; gap: .6rem; }
+.verdict-line { margin: 0; font-weight: 700; }
+.verdict-line.ok { color: var(--ok); }
+.verdict-line.bad { color: var(--bad); }
+.explain { background: var(--sunken); border-radius: 10px; padding: 1rem 1.15rem; display: grid; gap: .5rem; }
+.explain p { margin: 0; }
+.explain .label { font: 600 .7rem var(--font-mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.explain .ref { font-size: .93rem; }
+
+.qactions { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: space-between; align-items: center; padding-top: .4rem; }
+.keys { margin: 0; font: 400 .78rem var(--font-mono); color: var(--muted); }
+
+.rail {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 4.5rem);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  padding: 1.1rem; display: grid; gap: 1rem; min-width: 0;
+}
+.rail-head { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
+.rail h2 { font: 600 .74rem var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(2.15rem, 1fr)); gap: .3rem; }
+.cell {
+  width: 100%; aspect-ratio: 1; border: 1px solid var(--line); background: var(--surface); border-radius: 6px;
+  font: 500 .76rem var(--font-mono); color: var(--muted); cursor: pointer; position: relative; padding: 0;
+}
+.cell:hover { border-color: var(--muted); }
+.cell.answered { background: var(--accent-soft); color: var(--ink); border-color: transparent; }
+.cell.right { background: var(--ok-soft); color: var(--ok); border-color: transparent; }
+.cell.wrong { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
+.cell.current { outline: 2px solid var(--accent); outline-offset: 1px; color: var(--ink); }
+.cell.flagged::after { content: ""; position: absolute; top: 3px; right: 3px; width: 6px; height: 6px; border-radius: 50%; background: var(--flag); }
+.legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .35rem .9rem; font-size: .82rem; color: var(--muted); }
+.legend li { display: flex; align-items: center; gap: .35rem; }
+.sw { width: .8rem; height: .8rem; border-radius: 3px; border: 1px solid var(--line); background: var(--surface); position: relative; }
+.sw.answered { background: var(--accent-soft); border-color: transparent; }
+.sw.flagged::after { content: ""; position: absolute; inset: 0; margin: auto; width: 5px; height: 5px; border-radius: 50%; background: var(--flag); }
+.sw.right { background: var(--ok-soft); border-color: transparent; }
+.sw.wrong { background: var(--bad-soft); border-color: transparent; }
+.rail .btn { justify-content: center; }
+
+/* ---------- Dialog ---------- */
+.overlay { position: fixed; inset: 0; background: var(--scrim); display: grid; place-items: center; padding: 16px; z-index: 50; }
+.dialog {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  max-width: 30rem; width: 100%; padding: 1.5rem; display: grid; gap: 1rem;
+  box-shadow: 0 24px 60px rgb(0 0 0 / .25);
+}
+.dialog h2 { font: 600 1.4rem/1.2 var(--font-display); margin: 0; }
+.dialog p { margin: 0; color: var(--muted); }
+.dialog .row { justify-content: flex-end; }
+
+/* ---------- Results ---------- */
+.result-hero { display: grid; gap: .5rem; }
+.score { font: 600 clamp(3.5rem, 11vw, 5.5rem)/1 var(--font-display); margin: .3rem 0 0; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.score small { font-size: .38em; color: var(--muted); letter-spacing: 0; margin-left: .15em; }
+.verdict { margin: 0; font-size: 1.15rem; font-weight: 700; }
+.verdict.pass { color: var(--ok); }
+.verdict.fail { color: var(--bad); }
+.strip-wrap { padding: 1.5rem 0 2rem; }
+.strip { position: relative; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: var(--g, 3px); }
+.strip i { height: 1.75rem; background: var(--sunken); border-radius: 2px; }
+.strip i.on { background: var(--ok); }
+.strip.fail i.on { background: var(--accent); }
+.passline { position: absolute; top: -.45rem; bottom: -.45rem; width: 2px; background: var(--ink); }
+.passline span {
+  position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: .3rem;
+  font: 600 .7rem var(--font-mono); letter-spacing: .05em; text-transform: uppercase; white-space: nowrap;
+}
+.secs { display: grid; gap: .9rem; }
+.sec-row { display: grid; grid-template-columns: minmax(0, 17rem) minmax(0, 1fr) 4.5rem; gap: 1rem; align-items: center; }
+.sec-row .label { font-weight: 600; }
+.sec-row .label small { display: block; font: 400 .8rem var(--font-mono); color: var(--muted); }
+.sec-row .val { font: 600 .95rem var(--font-mono); text-align: right; font-variant-numeric: tabular-nums; }
+.bar2 { position: relative; height: .7rem; background: var(--sunken); border-radius: 99px; }
+.bar2 > span { display: block; height: 100%; border-radius: 99px; background: var(--accent); }
+.bar2 > span.ok { background: var(--ok); }
+.bar2 .tick { position: absolute; top: -.3rem; bottom: -.3rem; width: 2px; background: var(--ink); opacity: .55; }
+.filters { display: flex; flex-wrap: wrap; gap: .4rem; }
+.filters .btn { padding: .45rem .8rem; font-size: .88rem; }
+.filters .btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.rv-list { display: grid; gap: 1rem; }
+.rv {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 1.25rem; display: grid; gap: .85rem; scroll-margin-top: 5rem; min-width: 0;
+}
+.rv-head { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; justify-content: space-between; }
+.ropts { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; }
+.ropt {
+  display: grid; grid-template-columns: 1.6rem minmax(0, 1fr) auto; gap: .7rem; align-items: start;
+  padding: .55rem .8rem; border: 1px solid var(--line); border-radius: 8px;
+}
+.ropt.right { border-color: var(--ok); background: var(--ok-soft); }
+.ropt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.ropt .opt-key { border-radius: 5px; }
+.ropt.right .opt-key { background: var(--ok); border-color: var(--ok); color: var(--surface); }
+.ropt.wrong .opt-key { background: var(--bad); border-color: var(--bad); color: var(--surface); }
+.ropt.right .opt-mark { color: var(--ok); }
+.ropt.wrong .opt-mark { color: var(--bad); }
+
+@media (max-width: 900px) {
+  .run { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+  .rail { position: static; }
+}
+@media (max-width: 600px) {
+  .wrap { padding-block: 1.25rem 3rem; }
+  .qtext { font-size: 1.22rem; }
+  .sec-row { grid-template-columns: minmax(0, 1fr) auto; gap: .45rem .75rem; }
+  .sec-row .bar2 { grid-column: 1 / -1; order: 3; }
+  .hist li { grid-template-columns: minmax(0, 1fr) auto; }
+  .hist li .chip { grid-column: 2; }
+  .opt, .ropt { grid-template-columns: 1.6rem minmax(0, 1fr); }
+  .opt-mark { grid-column: 2; line-height: 1.2; }
+  .bar-note.hide-sm { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+<header class="bar" id="bar"></header>
+<main class="wrap" id="app"></main>
+
+<script>
+/* =====================================================================
+   Question bank. Original questions written against the objectives in
+   Adobe's AD0-E138 exam (AEM Business Practitioner Professional).
+   o = objective, a = indexes of the correct options.
+   ===================================================================== */
+const SECTIONS = {
+  1: { name: "Product Capabilities", weight: 28, draw: 14 },
+  2: { name: "Content Authoring and Optimization", weight: 24, draw: 12 },
+  3: { name: "Technical", weight: 16, draw: 8 },
+  4: { name: "Content Delivery", weight: 22, draw: 11 },
+  5: { name: "Business Analysis", weight: 10, draw: 5 }
+};
+const OBJECTIVES = {
+  "1.1": "Out-of-the-box functionality",
+  "1.2": "Page properties and templates",
+  "1.3": "Adobe products for tracking behavior",
+  "1.4": "Content Hub vs Asset Share Commons",
+  "1.5": "AEM instance types",
+  "2.1": "Role-based permissions for assets",
+  "2.2": "Content and Experience Fragments",
+  "2.3": "Multi Site Manager structure",
+  "2.4": "Content audits",
+  "3.1": "User groups and permissions",
+  "3.2": "Multilingual and multi-site structure",
+  "3.3": "Cloud vs on-premise",
+  "3.4": "How content is stored",
+  "3.5": "Edge Delivery Services",
+  "4.1": "Delivering to many touchpoints",
+  "4.2": "User groups in workflow steps",
+  "4.3": "Testing responsive layouts",
+  "4.4": "Editable templates and constraints",
+  "5.1": "Website hierarchy",
+  "5.2": "Business benefits of AEM"
+};
+const EXAM = { total: 50, minutes: 100, pass: 30 };
+const PASS_RATIO = 0.6;
+
+const DOC = "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/";
+
+const QUESTIONS = [
+/* ---------------- Section 1: Product Capabilities ---------------- */
+{ id: "P01", o: "1.1",
+  q: "A marketing team wants authors to build pages from ready-made building blocks maintained by Adobe, such as Title, Text, Image, Teaser and Carousel, instead of having developers build every component from scratch. What does AEM provide for this?",
+  opts: ["Core Components", "Content Fragment Models", "Asset Share Commons", "Workflow models"],
+  a: [0],
+  ex: "Core Components are Adobe's open-source set of production-ready components for AEM Sites. They're versioned and accessible, support the Style System and the Adobe Client Data Layer, and projects extend them rather than starting from nothing.",
+  ref: ["Core Components introduction", "https://experienceleague.adobe.com/en/docs/experience-manager-core-components/using/introduction"] },
+{ id: "P02", o: "1.1",
+  q: "Authors want a light and a dark version of the Teaser component. The brand team doesn't want developers to build a second component. Which out-of-the-box capability fits?",
+  opts: ["The Style System, with styles defined in the component's policy", "A Live Copy of the Teaser component", "A Content Fragment variation", "Layout mode"],
+  a: [0],
+  ex: "With the Style System, template authors define named styles (CSS classes) in a component's policy. Authors then pick a style from the paintbrush icon in the component toolbar. Developers write the CSS once and no new component is needed.",
+  ref: ["Style System", DOC + "sites/authoring/page-editor/style-system"] },
+{ id: "P03", o: "1.1",
+  q: "The DAM holds 40,000 product photos without keywords, and nobody has time to tag them by hand. Which AEM capability makes them searchable by what they show?",
+  opts: ["Smart Tags, which use AI to tag assets automatically", "Translation projects", "Closed User Groups", "Timewarp"],
+  a: [0],
+  ex: "Smart Tags use Adobe's AI services to add descriptive tags to images, videos and text assets, so people can find them through search. In AEM as a Cloud Service they're applied when assets are processed on upload.",
+  ref: ["Smart Tags", DOC + "assets/manage/smart-tags"] },
+{ id: "P04", o: "1.1",
+  q: "For a holiday campaign, 40 pages must change and go live together at midnight on 1 December. Authors must keep updating the current pages until then. Which feature should the team use?",
+  opts: ["A Launch with a launch date and the Production Ready option selected", "A Live Copy of the site that is rolled out on 1 December", "On Time and Off Time on each of the 40 pages", "A new language copy of the site"],
+  a: [0],
+  ex: "A Launch is a copy of selected pages that authors change in parallel with the live pages. With a launch date set and Production Ready selected, AEM promotes the launch and publishes it automatically at that time.",
+  ref: ["Launches", DOC + "sites/authoring/launches/overview"] },
+{ id: "P05", o: "1.1",
+  q: "The legal team asks how the home page looked to visitors on a date three months ago. Which AEM feature shows this?",
+  opts: ["Timewarp", "Layout mode", "The Live Copy Overview", "The Emulator"],
+  a: [0],
+  ex: "Timewarp shows the published state of a page at a chosen date in the past. It relies on page versions, which AEM creates when a page is published.",
+  ref: ["Working with page versions and Timewarp", DOC + "sites/authoring/sites-console/page-versions"] },
+{ id: "P06", o: "1.1",
+  q: "The brand wants one master image to be delivered automatically at the right size and crop for phones, tablets and desktops. Which AEM capability does this?",
+  opts: ["Dynamic Media, with image presets and Smart Crop", "Experience Fragment variations", "The Emulator", "Language copies"],
+  a: [0],
+  ex: "Dynamic Media generates renditions on the fly from a single master asset. Smart Crop uses AI to keep the point of interest in view at each breakpoint, so nobody has to crop every size by hand.",
+  ref: ["Dynamic Media", DOC + "assets/dynamicmedia/dynamic-media"] },
+{ id: "P07", o: "1.1",
+  q: "An author published a page with the wrong prices and wants to go back to the content as it was yesterday. What should they do?",
+  opts: ["Restore the previous version of the page from its version history, then publish it", "Ask an administrator to restore a backup of the whole repository", "Edit yesterday's content in Timewarp", "Roll out the page from its blueprint"],
+  a: [0],
+  ex: "AEM creates a version every time a page is published, and authors can also create versions manually. Restoring a version returns the page to that state. Timewarp only displays past states; it can't be used to edit them.",
+  ref: ["Working with page versions", DOC + "sites/authoring/sites-console/page-versions"] },
+{ id: "P08", o: "1.2",
+  q: "A page is titled \"Mountain and trail bikes for every rider\", but the site menu should show the short label \"Bikes\". Which page property should the author set?",
+  opts: ["Navigation Title", "Subtitle", "Description", "Vanity URL"],
+  a: [0],
+  ex: "Navigation components use the Navigation Title when it's set and fall back to the page title otherwise. Menus stay short without changing the heading shown on the page.",
+  ref: ["Editing page properties", DOC + "sites/authoring/sites-console/page-properties"] },
+{ id: "P09", o: "1.2",
+  q: "A campaign landing page must be reachable from email links but must not appear in the site's menus. Which page property handles this?",
+  opts: ["Hide in Navigation", "Off Time", "Allowed Templates", "Navigation Title"],
+  a: [0],
+  ex: "Hide in Navigation keeps the page published and reachable by its URL, while navigation components leave it out. Off Time would make the page unavailable altogether.",
+  ref: ["Editing page properties", DOC + "sites/authoring/sites-console/page-properties"] },
+{ id: "P10", o: "1.2",
+  q: "A promotion page is already published, but it should only be visible to visitors from 25 to 30 November. Which page properties should the author set?",
+  opts: ["On Time and Off Time", "Hide in Navigation", "Vanity URL", "Allowed Templates"],
+  a: [0],
+  ex: "On Time and Off Time control when a published page is shown. Outside that window the page isn't available on publish, and nobody needs to publish or unpublish it on the day.",
+  ref: ["Editing page properties", DOC + "sites/authoring/sites-console/page-properties"] },
+{ id: "P11", o: "1.2",
+  q: "A print campaign needs the short address `wknd.com/bikes` for a page that lives at `/content/wknd/us/en/products/bikes/mountain`. Which page property should the author set?",
+  opts: ["Vanity URL", "Navigation Title", "Subtitle", "Hide in Navigation"],
+  a: [0],
+  ex: "A vanity URL gives a page an extra, shorter address. Depending on the setup, the dispatcher or CDN may also need a rule that allows it.",
+  ref: ["Editing page properties", DOC + "sites/authoring/sites-console/page-properties"] },
+{ id: "P12", o: "1.2",
+  q: "Every page created from the Article template should start with the tag \"Article\" and a default thumbnail. Where should the template author set this?",
+  opts: ["In the template's Initial Page Properties", "In the page properties of each new page after it is created", "In the Style System of the Title component", "In the site root's Allowed Templates property"],
+  a: [0],
+  ex: "Initial Page Properties are copied into each page created from the template, and authors can change them afterwards. Allowed Templates only controls which templates can be used under a page.",
+  ref: ["Creating page templates", DOC + "sites/authoring/sites-console/templates"] },
+{ id: "P13", o: "1.2",
+  q: "What is the main purpose of page properties in AEM?",
+  opts: ["They store information about the page, such as titles, tags, scheduling, SEO details and permissions, separately from the content shown on it", "They define which components authors can add to the page", "They contain the CSS and JavaScript used by the page", "They hold the layout of the page for each device breakpoint"],
+  a: [0],
+  ex: "Page properties hold the metadata that navigation, search, publishing, social sharing, permissions, MSM and translation rely on. Allowed components come from template policies, styling from front-end code, and layout from Layout mode.",
+  ref: ["Editing page properties", DOC + "sites/authoring/sites-console/page-properties"] },
+{ id: "P14", o: "1.3",
+  q: "Marketing wants reports on which pages get the most visits, how visitors move through the site and where they leave the checkout flow. Which Adobe product fits?",
+  opts: ["Adobe Analytics", "Adobe Target", "Adobe Campaign", "Adobe Workfront"],
+  a: [0],
+  ex: "Adobe Analytics collects and reports on visitor behavior such as page views, paths, fall-out and conversions. Target is for testing and personalization, Campaign for email and messaging, and Workfront for managing work.",
+  ref: ["Adobe Analytics documentation", "https://experienceleague.adobe.com/en/docs/analytics"] },
+{ id: "P15", o: "1.3",
+  q: "The team wants to test two versions of the home page hero, then show each visitor segment the version that performs best. Which Adobe product fits?",
+  opts: ["Adobe Target", "Adobe Analytics", "Adobe Experience Manager Assets", "Adobe Express"],
+  a: [0],
+  ex: "Adobe Target runs A/B and multivariate tests and personalizes experiences for audiences, including automated personalization. Analytics measures the results but doesn't change what visitors see.",
+  ref: ["Adobe Target documentation", "https://experienceleague.adobe.com/en/docs/target"] },
+{ id: "P16", o: "1.3",
+  q: "Marketing wants to add and change tracking code, such as Adobe Analytics and third-party pixels, without waiting for an AEM code release. What should the site use?",
+  opts: ["Tags in Adobe Experience Platform Data Collection (formerly Adobe Launch)", "An OSGi configuration per environment", "An Experience Fragment containing the scripts", "The Style System"],
+  a: [0],
+  ex: "Tags let marketers manage tracking code in a web interface and publish changes separately from AEM deployments. AEM only has to load the tags library on its pages.",
+  ref: ["Tags overview", "https://experienceleague.adobe.com/en/docs/experience-platform/tags/home"] },
+{ id: "P17", o: "1.3",
+  q: "With Core Components, which feature records page and component information, such as a click on a teaser, in a standard JavaScript structure that analytics tools can read?",
+  opts: ["The Adobe Client Data Layer", "The Style System", "The Sling Model Exporter", "Smart Tags"],
+  a: [0],
+  ex: "Core Components can push page and component data and interaction events into the Adobe Client Data Layer. Tags rules then read that data and send it to Analytics or other tools, without scraping the page.",
+  ref: ["Using the Adobe Client Data Layer with Core Components", "https://experienceleague.adobe.com/en/docs/experience-manager-core-components/using/developing/data-layer/overview"] },
+{ id: "P18", o: "1.3",
+  q: "The business wants to analyze customer journeys across the website, the mobile app and call center records together. Which Adobe product fits best?",
+  opts: ["Customer Journey Analytics", "Adobe Target", "AEM Assets reports", "Adobe Express"],
+  a: [0],
+  ex: "Customer Journey Analytics works on data in Adobe Experience Platform, so it can join web, app and offline data such as call center records in one analysis.",
+  ref: ["Customer Journey Analytics overview", "https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-overview/cja-overview"] },
+{ id: "P19", o: "1.4",
+  q: "A brand team on AEM Assets as a Cloud Service wants a ready-to-use portal where marketers and partners find and download approved brand assets. It should be set up through configuration, without a development project. Which option fits?",
+  opts: ["Content Hub", "Asset Share Commons", "Experience Fragments", "A new AEM Sites site built from custom components"],
+  a: [0],
+  ex: "Content Hub comes with AEM Assets as a Cloud Service and is configured rather than developed. It gives users search, filters, collections and branding over the assets approved in AEM Assets.",
+  ref: ["Content Hub overview", DOC + "assets/content-hub/product-overview"] },
+{ id: "P20", o: "1.4",
+  q: "A company runs AEM 6.5 on its own servers. Its developers must build an asset portal with fully custom search, page layouts and download rules. Which option fits?",
+  opts: ["Asset Share Commons", "Content Hub", "Adobe Express", "The Live Copy Overview"],
+  a: [0],
+  ex: "Content Hub is only available with AEM Assets as a Cloud Service. Asset Share Commons is an open-source reference implementation built from AEM Sites components, which developers customize and deploy as part of their own project.",
+  ref: ["Asset Share Commons", "https://opensource.adobe.com/asset-share-commons/"] },
+{ id: "P21", o: "1.4",
+  q: "Which statement correctly compares Content Hub and Asset Share Commons?",
+  opts: ["Content Hub is an Adobe-provided application included with AEM Assets as a Cloud Service; Asset Share Commons is open-source code that a project customizes, deploys and maintains itself", "Both are Adobe-supported products that need a separate license", "Asset Share Commons replaced Content Hub in AEM as a Cloud Service", "Content Hub runs only on AEM 6.5; Asset Share Commons runs only on AEM as a Cloud Service"],
+  a: [0],
+  ex: "Content Hub is a product capability that Adobe supports and updates. Asset Share Commons is community-supported open source that runs on AEM 6.5 and AEM as a Cloud Service, so the project owns its code, changes and upgrades.",
+  ref: ["Asset Share Commons", "https://opensource.adobe.com/asset-share-commons/"] },
+{ id: "P22", o: "1.4",
+  q: "Which assets can Content Hub users find?",
+  opts: ["Assets that have been approved in AEM Assets", "Every asset in the DAM, including drafts", "Only assets stored inside Experience Fragments", "Only assets uploaded through Asset Share Commons"],
+  a: [0],
+  ex: "Content Hub only shows assets approved in AEM Assets, so its users get on-brand, ready-to-use content while work in progress stays in the DAM.",
+  ref: ["Content Hub overview", DOC + "assets/content-hub/product-overview"] },
+{ id: "P23", o: "1.5", t: "multi",
+  q: "Which statements about AEM instance types are correct?",
+  opts: ["Authors create and edit content on the author instance", "Website visitors are served by the publish instance, usually through the dispatcher", "Website visitors log in to the author instance to read the site", "The dispatcher is where authors edit content before publishing"],
+  a: [0, 1],
+  ex: "Author is the internal environment where content is created and approved. Publishing copies content to the publish tier, which serves visitors through the dispatcher and a CDN.",
+  ref: ["AEM as a Cloud Service architecture", DOC + "overview/architecture"] },
+{ id: "P24", o: "1.5",
+  q: "What is the main job of the dispatcher?",
+  opts: ["Caching pages and filtering requests in front of publish, which improves performance and security", "Translating content into other languages", "Storing the original files of digital assets", "Running approval workflows"],
+  a: [0],
+  ex: "The dispatcher is AEM's caching and load-balancing layer on the web server. Cached pages are served without calling publish, and filter rules block requests that shouldn't reach AEM.",
+  ref: ["Dispatcher overview", "https://experienceleague.adobe.com/en/docs/experience-manager-dispatcher/using/dispatcher"] },
+{ id: "P25", o: "1.5",
+  q: "On AEM as a Cloud Service, stakeholders want to review new pages on a site that looks like production before go-live, without the public seeing them. Which service fits?",
+  opts: ["The preview service", "The author service in Layout mode", "A development environment's publish service", "A Live Copy"],
+  a: [0],
+  ex: "Every Cloud Service environment includes a preview service. Authors publish pages to preview, share the preview URL with reviewers, and publish to the live site when they're approved.",
+  ref: ["Previewing content", DOC + "sites/authoring/sites-console/previewing-content"] },
+{ id: "P26", o: "1.5",
+  q: "A developer starts AEM locally with the default settings. On which ports do author and publish run?",
+  opts: ["Author on 4502, publish on 4503", "Author on 4503, publish on 4502", "Author on 8080, publish on 80", "Both on 4502"],
+  a: [0],
+  ex: "By convention a local author runs on port 4502 and a local publish on 4503. You'll see these ports in most AEM tutorials and project setups.",
+  ref: ["AEM as a Cloud Service SDK", DOC + "implementing/developing/aem-as-a-cloud-service-sdk"] },
+{ id: "P27", o: "1.5",
+  q: "In an AEM as a Cloud Service program, which environment is meant for final testing with production-like settings before a release goes to production?",
+  opts: ["Stage", "Development", "Rapid Development Environment", "Local SDK"],
+  a: [0],
+  ex: "A program's production environment is paired with a stage environment. The production pipeline deploys to stage first, runs tests there, and only then deploys to production.",
+  ref: ["Managing environments", DOC + "implementing/using-cloud-manager/manage-environments"] },
+{ id: "P28", o: "1.5",
+  q: "Why is the publish tier usually scaled to several instances while the author tier is not?",
+  opts: ["Publish serves every website visitor, so it handles far more traffic than author, which only the content team uses", "Author can't run on more than one server", "Publish stores more content than author", "Each publish instance serves a different language"],
+  a: [0],
+  ex: "Traffic grows with the audience, not with the size of the content team. In AEM as a Cloud Service the publish tier scales automatically with load.",
+  ref: ["AEM as a Cloud Service architecture", DOC + "overview/architecture"] },
+
+/* ---------------- Section 2: Content Authoring and Optimization ---------------- */
+{ id: "A01", o: "2.1",
+  q: "An agency must upload and edit images in `/content/dam/wknd/campaigns`, but only the brand team may publish them. Which permissions should the agency's group get on that folder?",
+  opts: ["Read, Modify, Create and Delete, but not Replicate", "Read and Replicate only", "All permissions, including Edit ACL", "Read only, with uploads done by the brand team"],
+  a: [0],
+  ex: "Replicate is the permission that allows publishing. Without it the agency can work on assets, and publishing goes through the brand team, for example through an approval workflow. Edit ACL would let the agency change permissions itself.",
+  ref: ["User, group and access rights administration", "https://experienceleague.adobe.com/en/docs/experience-manager-65/content/security/user-group-ac-admin"] },
+{ id: "A02", o: "2.1",
+  q: "Each regional marketing team should only see its own region's folder in AEM Assets. How should this be set up?",
+  opts: ["Create a group per region and give each group read access only to its own region's folder", "Use a different metadata schema for each region", "Create a collection for each region", "Apply Smart Tags with region names"],
+  a: [0],
+  ex: "Access to folders is controlled by permissions on groups. Metadata schemas change the fields shown, collections group assets without restricting access, and tags only help search.",
+  ref: ["User, group and access rights administration", "https://experienceleague.adobe.com/en/docs/experience-manager-65/content/security/user-group-ac-admin"] },
+{ id: "A03", o: "2.1",
+  q: "Why should asset permissions be assigned to groups rather than to individual users?",
+  opts: ["Access then changes by adding or removing group members, which is easier to manage and audit as people join, move or leave", "AEM doesn't allow permissions on individual users", "Group permissions make assets load faster", "Only groups can be given read access"],
+  a: [0],
+  ex: "Role-based groups (for example DAM contributors and DAM approvers) keep permissions consistent. Onboarding someone means adding them to the right groups instead of setting permissions folder by folder.",
+  ref: ["User, group and access rights administration", "https://experienceleague.adobe.com/en/docs/experience-manager-65/content/security/user-group-ac-admin"] },
+{ id: "A04", o: "2.1",
+  q: "Which permission must a user have on an asset folder to publish its assets?",
+  opts: ["Replicate", "Modify", "Edit ACL", "Create"],
+  a: [0],
+  ex: "In AEM's permission model, Replicate controls publishing and unpublishing. Modify and Create allow editing and uploading, and Edit ACL allows changing permissions.",
+  ref: ["User, group and access rights administration", "https://experienceleague.adobe.com/en/docs/experience-manager-65/content/security/user-group-ac-admin"] },
+{ id: "A05", o: "2.2",
+  q: "Product descriptions must be reused on the website and in a mobile app. They're structured (name, summary, price, image) and have no layout. What should authors create?",
+  opts: ["Content Fragments", "Experience Fragments", "Pages from a product template", "Live Copies"],
+  a: [0],
+  ex: "Content Fragments hold structured content without layout, so any channel can present them, including through GraphQL for apps. Experience Fragments bundle content with layout and suit reuse as rendered HTML.",
+  ref: ["Content Fragments overview", DOC + "sites/administering/content-fragments/overview"] },
+{ id: "A06", o: "2.2",
+  q: "Marketing builds a promotional banner from several components with a specific layout. They want to reuse it on many pages and in Adobe Target activities. What should they create?",
+  opts: ["An Experience Fragment", "A Content Fragment", "A Launch", "A language copy"],
+  a: [0],
+  ex: "An Experience Fragment is a group of components with layout that can be placed on many pages and exported to Adobe Target as an offer.",
+  ref: ["Experience Fragments", DOC + "sites/authoring/fragments/experience-fragments"] },
+{ id: "A07", o: "2.2", t: "multi",
+  q: "The site footer is built as an Experience Fragment. Which are benefits of this approach?",
+  opts: ["Changing the footer once updates every page that uses it", "The footer can have variations, for example for different channels", "The footer is translated into every language automatically", "The footer no longer has to be published"],
+  a: [0, 1],
+  ex: "Pages reference the fragment, so one edit and one publish of the fragment update them all. Variations keep related versions together. Translation and publishing still happen through the normal processes.",
+  ref: ["Experience Fragments", DOC + "sites/authoring/fragments/experience-fragments"] },
+{ id: "A08", o: "2.2",
+  q: "The mobile app needs a shorter version of an article summary, while the website keeps the full text. How can authors handle this within one Content Fragment?",
+  opts: ["Add a variation to the fragment with the shorter text", "Copy the fragment and edit the copy", "Create an Experience Fragment for the app", "Create a Live Copy of the fragment"],
+  a: [0],
+  ex: "Every Content Fragment has a main variation, and authors can add variations for specific channels or contexts. Related versions stay together and can be kept in sync.",
+  ref: ["Content Fragments overview", DOC + "sites/administering/content-fragments/overview"] },
+{ id: "A09", o: "2.2",
+  q: "Before authors can create structured Event fragments with a title, date and location, what must exist?",
+  opts: ["A Content Fragment Model for events, enabled for the site's configuration and allowed on the folder", "An editable page template for events", "An Experience Fragment template", "A workflow model for events"],
+  a: [0],
+  ex: "Content Fragment Models define the fields and data types of a fragment. They're enabled per configuration and can be restricted per folder, so authors only see the models that apply.",
+  ref: ["Content Fragment Models", DOC + "sites/administering/content-fragments/content-fragment-models"] },
+{ id: "A10", o: "2.2",
+  q: "What is the key difference between Content Fragments and Experience Fragments?",
+  opts: ["Content Fragments are structured content without layout for any channel; Experience Fragments combine content and layout built from components", "Content Fragments hold images only; Experience Fragments hold text only", "Content Fragments can only be used on AEM pages; Experience Fragments only in headless apps", "There is no difference; Experience Fragment is the newer name for Content Fragment"],
+  a: [0],
+  ex: "Content Fragments are about the content itself and suit headless delivery. Experience Fragments are about a ready-to-use experience: components arranged in a layout.",
+  ref: ["Experience Fragments", DOC + "sites/authoring/fragments/experience-fragments"] },
+{ id: "A11", o: "2.3",
+  q: "A brand has one English master site and needs US, UK and Australian sites that receive its updates but can make local changes. Which AEM feature fits?",
+  opts: ["Multi Site Manager, with the master as the blueprint and a Live Copy per country", "Language copies managed through translation projects", "Launches", "Copying and pasting the site three times"],
+  a: [0],
+  ex: "MSM keeps live copies connected to a blueprint, so updates can be rolled out, while each country can break inheritance where it needs local content. Copies made with copy and paste have no connection at all.",
+  ref: ["Multi Site Manager overview", DOC + "sites/administering/reusing-content/msm/overview"] },
+{ id: "A12", o: "2.3",
+  q: "On a UK live copy page, the local team must change one Teaser while the rest of the page keeps receiving updates from the blueprint. What should they do?",
+  opts: ["Cancel inheritance on that Teaser component only", "Detach the page from the blueprint", "Suspend the live copy page", "Make the change on the blueprint page"],
+  a: [0],
+  ex: "Cancelling inheritance on one component keeps the rest of the page in sync. Suspending stops updates for the whole page until it's resumed, and detaching removes the live relationship permanently.",
+  ref: ["Creating and synchronizing Live Copies", DOC + "sites/administering/reusing-content/msm/creating-live-copies"] },
+{ id: "A13", o: "2.3",
+  q: "Changes to the blueprint should reach the live copies automatically every time a blueprint page is modified. Which rollout configuration fits?",
+  opts: ["Push on modify", "Standard rollout config", "Activate on Blueprint Activation", "Promote Launch"],
+  a: [0],
+  ex: "Push on modify rolls out as soon as the source page changes. The standard rollout config only runs when someone starts a rollout, and Activate on Blueprint Activation publishes live copies when the blueprint is published.",
+  ref: ["Live Copy synchronization configuration", DOC + "sites/administering/reusing-content/msm/live-copy-sync-config"] },
+{ id: "A14", o: "2.3",
+  q: "What is the difference between Rollout and Synchronize in MSM?",
+  opts: ["Rollout is started from the blueprint and pushes changes to its live copies; Synchronize is started from a live copy and pulls changes from the blueprint", "Rollout publishes pages; Synchronize only saves them", "Rollout is for languages; Synchronize is for countries", "They're the same action with different names in different consoles"],
+  a: [0],
+  ex: "Both apply the blueprint's content to live copies. The difference is where you start: Rollout from the source, for all or selected live copies, and Synchronize from one live copy.",
+  ref: ["Creating and synchronizing Live Copies", DOC + "sites/administering/reusing-content/msm/creating-live-copies"] },
+{ id: "A15", o: "2.3",
+  q: "A country site must permanently stop receiving updates from the blueprint and be managed on its own from now on. What should be done?",
+  opts: ["Detach the live copy", "Suspend the live copy", "Cancel inheritance on every component", "Delete the blueprint"],
+  a: [0],
+  ex: "Detaching removes the live relationship for good and turns the pages into normal pages. Suspending is temporary, and cancelling inheritance component by component would still leave the page connected.",
+  ref: ["Creating and synchronizing Live Copies", DOC + "sites/administering/reusing-content/msm/creating-live-copies"] },
+{ id: "A16", o: "2.3",
+  q: "The global team needs to see all live copies of a blueprint and which ones have changes that haven't been rolled out yet. Where can they check?",
+  opts: ["The Live Copy Overview", "The Timeline of each page", "Package Manager", "The translation project dashboard"],
+  a: [0],
+  ex: "The Live Copy Overview, opened from the blueprint in the Sites console, lists its live copies with their status and lets you roll out, synchronize, suspend or resume them.",
+  ref: ["Live Copy Overview", DOC + "sites/administering/reusing-content/msm/live-copy-overview"] },
+{ id: "A17", o: "2.3",
+  q: "The English site must also be available in French and German. Which approach fits?",
+  opts: ["Create language copies and translate them through translation projects", "Create live copies and retype the text in each language", "Create a Launch for each language", "Use Smart Tags in French and German"],
+  a: [0],
+  ex: "Translation uses language copies managed by translation projects, with machine or human translation. MSM is for sites that share content in the same language. Large sites often combine both: language masters are translated, then rolled out to country live copies.",
+  ref: ["Translating content for multilingual sites", DOC + "sites/administering/reusing-content/translation/overview"] },
+{ id: "A18", o: "2.4",
+  q: "Before a redesign, the team needs a spreadsheet of all pages with their title, template, last modified and last published dates. Which out-of-the-box feature helps?",
+  opts: ["The CSV Report option in the Sites console", "Package Manager", "Timewarp", "The Live Copy Overview"],
+  a: [0],
+  ex: "From the Sites console you can create a CSV report of a page tree and choose which properties to include, such as title, template, modified and published dates. It's a quick starting point for a content inventory.",
+  ref: ["Organizing pages in the Sites console", DOC + "sites/authoring/sites-console/organizing-pages"] },
+{ id: "A19", o: "2.4",
+  q: "During a content audit, an editor wants to retire an old image but first needs to know which pages use it. Where can they check?",
+  opts: ["The References rail for the asset", "The Timeline rail for the asset", "The asset's metadata schema", "Layout mode"],
+  a: [0],
+  ex: "The References rail lists pages and other content that use the selected item, so you know the impact before you change or delete it.",
+  ref: ["Basic handling of the authoring UI", DOC + "sites/authoring/basic-handling"] },
+{ id: "A20", o: "2.4",
+  q: "An audit must show who modified and published a page, and when. Where does AEM show this?",
+  opts: ["The Timeline rail", "The References rail", "Page properties, Advanced tab", "The Emulator"],
+  a: [0],
+  ex: "The Timeline rail shows a page's activity: versions, publishing events, workflows, launches and comments, with dates and users.",
+  ref: ["Basic handling of the authoring UI", DOC + "sites/authoring/basic-handling"] },
+{ id: "A21", o: "2.4",
+  q: "Legal asks for a list of assets whose usage rights have expired. Which AEM feature helps?",
+  opts: ["The Expiration report in Assets reports", "The Timeline rail of the DAM root folder", "Smart Tags", "The Live Copy Overview"],
+  a: [0],
+  ex: "Assets reports include an Expiration report that lists expired assets, along with reports on uploads, downloads, modifications and publishing.",
+  ref: ["Assets reports", DOC + "assets/admin/asset-reports"] },
+{ id: "A22", o: "2.4",
+  q: "When deciding which pages to keep, update or remove, which data best shows whether visitors actually use them?",
+  opts: ["Page-level traffic and engagement data from Adobe Analytics", "The number of versions each page has", "The size of each page in the repository", "The number of components on each page"],
+  a: [0],
+  ex: "A content audit combines an inventory from AEM with performance data. Visits, engagement and conversions from Analytics show which content earns its place.",
+  ref: ["Adobe Analytics documentation", "https://experienceleague.adobe.com/en/docs/analytics"] },
+{ id: "A23", o: "2.4",
+  q: "What should a content audit produce?",
+  opts: ["An inventory of existing content with a decision for each item, such as keep, update, merge or remove, and an owner", "A new set of page templates", "A full backup of the repository", "A list of AEM users and their passwords"],
+  a: [0],
+  ex: "The audit's output is a plan: what exists, how it performs, who owns it and what happens to it. That plan then feeds migrations, redesigns and governance.",
+  ref: ["Organizing pages in the Sites console", DOC + "sites/authoring/sites-console/organizing-pages"] },
+
+/* ---------------- Section 3: Technical ---------------- */
+{ id: "T01", o: "3.1",
+  q: "On a site, authors should create and edit pages, while approvers should also be able to publish. What's the recommended setup?",
+  opts: ["An Authors group with read, create and modify permissions on the site, an Approvers group that also has Replicate, and users added to the right group", "Give every user full permissions and train them on the rules", "One group for everyone, with permissions adjusted per user", "Add approvers to the administrators group"],
+  a: [0],
+  ex: "Permissions belong to role-based groups; users get roles through membership. Administrators can do far more than publish, so using that group for approvers breaks least privilege.",
+  ref: ["User, group and access rights administration", "https://experienceleague.adobe.com/en/docs/experience-manager-65/content/security/user-group-ac-admin"] },
+{ id: "T02", o: "3.1",
+  q: "How are users given access to the author service of AEM as a Cloud Service?",
+  opts: ["Through product profiles in the Adobe Admin Console, which sign users in with Adobe IMS", "By creating local users in CRXDE Lite", "Through an LDAP configuration on the author service", "By editing a users file on the server"],
+  a: [0],
+  ex: "Author access in Cloud Service goes through Adobe Identity Management. Administrators assign users to AEM product profiles in the Admin Console; AEM groups then control what those users can do.",
+  ref: ["IMS support for AEM as a Cloud Service", DOC + "security/ims-support"] },
+{ id: "T03", o: "3.1",
+  q: "A group is given permissions on `/content/wknd/us`. Which pages do they apply to?",
+  opts: ["`/content/wknd/us` and every page below it, unless different permissions are set lower in the tree", "Only `/content/wknd/us` itself", "Only the direct child pages of `/content/wknd/us`", "Every page under `/content/wknd`"],
+  a: [0],
+  ex: "Permissions are inherited down the content tree. That's one reason the site hierarchy matters: a well-structured tree lets you set permissions once per section.",
+  ref: ["User, group and access rights administration", "https://experienceleague.adobe.com/en/docs/experience-manager-65/content/security/user-group-ac-admin"] },
+{ id: "T04", o: "3.1",
+  q: "Part of the website must only be visible to logged-in members. Which AEM feature restricts it on publish?",
+  opts: ["A Closed User Group on that section", "Hide in Navigation", "Off Time", "Removing the Replicate permission"],
+  a: [0],
+  ex: "A Closed User Group, set in the page's permissions, limits who can see a page and its children on publish. Hiding a page from navigation doesn't protect it, and Replicate only affects who can publish.",
+  ref: ["Closed User Groups", "https://experienceleague.adobe.com/en/docs/experience-manager-65/content/security/closed-user-groups"] },
+{ id: "T05", o: "3.1",
+  q: "A user needs to create and edit editable templates. Which group should they belong to?",
+  opts: ["template-authors", "workflow-users", "dam-users", "everyone"],
+  a: [0],
+  ex: "Membership of template-authors gives access to the template editor. Template authoring is usually limited to a few trained people because template changes affect many pages.",
+  ref: ["Creating page templates", DOC + "sites/authoring/sites-console/templates"] },
+{ id: "T06", o: "3.2",
+  q: "WKND sells in the US (English), Canada (English and French) and Switzerland (German and French). Which structure follows Adobe's recommended pattern?",
+  opts: ["Language masters such as `/content/wknd/language-masters/en`, `/fr` and `/de` as blueprints, with live copies such as `/content/wknd/us/en`, `/content/wknd/ca/fr` and `/content/wknd/ch/de`", "One page tree per country, each made by copying the US site", "All languages mixed under `/content/wknd`, with the language set per page", "A separate AEM installation for each country"],
+  a: [0],
+  ex: "Each language is translated once in the language masters. Country sites are live copies of the right master, so they inherit updates and can still make local changes.",
+  ref: ["MSM best practices", DOC + "sites/administering/reusing-content/msm/best-practices"] },
+{ id: "T07", o: "3.2",
+  q: "How does AEM determine the language of a page for translation?",
+  opts: ["From its language root, a page named with a language code such as `de` or `fr-ch`, or from the page's Language property", "From the visitor's browser settings", "From the host name of the website", "From the author's user profile"],
+  a: [0],
+  ex: "Language roots named with ISO language codes tell AEM which language a branch is in. The translation tools use them to create and update language copies.",
+  ref: ["Preparing content for translation", DOC + "sites/administering/reusing-content/translation/preparation"] },
+{ id: "T08", o: "3.2",
+  q: "Product codes and prices must not be sent for translation, while titles and descriptions must. Where is this controlled?",
+  opts: ["In the translation rules (Translation Configuration)", "In each page's Navigation Title", "In the dispatcher filters", "In the Style System"],
+  a: [0],
+  ex: "Translation rules define which properties and content are sent for translation, per path and component. That keeps translation costs down and protects values that must stay the same.",
+  ref: ["Identifying content to translate", DOC + "sites/administering/reusing-content/translation/rules"] },
+{ id: "T09", o: "3.2",
+  q: "The French site must be translated by an external translation agency. What does AEM provide for this?",
+  opts: ["Translation projects connected to the agency through a translation integration configuration", "Exporting the site as a package and emailing it", "A French rollout configuration in MSM", "Smart Tags in French"],
+  a: [0],
+  ex: "AEM's Translation Integration Framework connects to machine translation and to human translation vendors. Translation projects send content out, track jobs and bring translations back into the language copies.",
+  ref: ["Translation Integration Framework", DOC + "sites/administering/reusing-content/translation/integration-framework"] },
+{ id: "T10", o: "3.3", t: "multi",
+  q: "Which are benefits of AEM as a Cloud Service compared with running AEM 6.5 on premise?",
+  opts: ["No version upgrade projects, because Adobe updates the service continuously", "The publish tier scales automatically with traffic", "Customers can change product code under `/libs` freely", "Customers manage the servers and operating systems themselves"],
+  a: [0, 1],
+  ex: "Cloud Service is always current and scales automatically. Product code is read-only, and Adobe runs the infrastructure.",
+  ref: ["What's new and different in AEM as a Cloud Service", DOC + "overview/what-is-new-and-different"] },
+{ id: "T11", o: "3.3",
+  q: "Which responsibility moves from the customer to Adobe with AEM as a Cloud Service?",
+  opts: ["Running the infrastructure: patching, scaling, monitoring and backups", "Writing the project's components", "Creating content and templates", "Defining user groups and permissions"],
+  a: [0],
+  ex: "Adobe operates the service. Customers still own their code, their content and how access is organized.",
+  ref: ["AEM as a Cloud Service introduction", DOC + "overview/introduction"] },
+{ id: "T12", o: "3.3",
+  q: "Which is the most valid reason for a company to keep AEM on its own servers rather than move to AEM as a Cloud Service?",
+  opts: ["A regulation or internal policy requires the system to run on infrastructure the company controls", "It wants automatic product updates", "It wants a built-in CDN", "It needs publish to scale during traffic peaks"],
+  a: [0],
+  ex: "The other three options are things Cloud Service provides. Strict control over the hosting infrastructure is one of the few reasons to stay on premise.",
+  ref: ["What's new and different in AEM as a Cloud Service", DOC + "overview/what-is-new-and-different"] },
+{ id: "T13", o: "3.4",
+  q: "How does AEM store content such as pages and their properties?",
+  opts: ["As a tree of nodes and properties in a Java Content Repository (JCR), implemented by Apache Jackrabbit Oak", "As HTML files on the web server", "In relational database tables, one table per page", "Only in the dispatcher cache"],
+  a: [0],
+  ex: "Everything in AEM, from pages and assets to templates and configuration, is a node with properties in the JCR. That's why content has paths like `/content/wknd/us/en`.",
+  ref: ["AEM development basics: the JCR", "https://experienceleague.adobe.com/en/docs/experience-manager-65/content/implementing/developing/introduction/the-basics"] },
+{ id: "T14", o: "3.4",
+  q: "Under which repository path are digital assets stored?",
+  opts: ["`/content/dam`", "`/apps/dam`", "`/conf/assets`", "`/var/assets`"],
+  a: [0],
+  ex: "Assets live under `/content/dam`. Pages are under `/content/<site>`, configuration such as templates under `/conf`, and code under `/apps`.",
+  ref: ["AEM development basics: the JCR", "https://experienceleague.adobe.com/en/docs/experience-manager-65/content/implementing/developing/introduction/the-basics"] },
+{ id: "T15", o: "3.4",
+  q: "Where in the repository are a site's editable templates stored?",
+  opts: ["`/conf/<site>/settings/wcm/templates`", "`/apps/<site>/templates`", "`/content/<site>/templates`", "`/libs/wcm/templates`"],
+  a: [0],
+  ex: "Editable templates are configuration, so they live in `/conf`. Older static templates were code in `/apps`, and `/libs` holds Adobe's product code.",
+  ref: ["Creating page templates", DOC + "sites/authoring/sites-console/templates"] },
+{ id: "T16", o: "3.4",
+  q: "How are large files, such as videos and high-resolution images, stored?",
+  opts: ["In a separate binary (blob) store, referenced from the asset's node in the repository", "As text inside a page property", "Only in the dispatcher cache", "Only on the CDN"],
+  a: [0],
+  ex: "The repository keeps the node structure and metadata, while binaries go to a data store or cloud blob storage. Renditions are stored as child nodes of the asset that point to their binaries.",
+  ref: ["Apache Jackrabbit Oak", "https://jackrabbit.apache.org/oak/docs/"] },
+{ id: "T17", o: "3.5",
+  q: "What is the main purpose of Edge Delivery Services?",
+  opts: ["Delivering very fast, high-performing websites from the edge, with simple authoring and a lightweight code base", "Storing original asset files instead of AEM Assets", "Running approval workflows on publish", "Translating content automatically"],
+  a: [0],
+  ex: "Edge Delivery Services serves pages from a CDN-based architecture designed for top Core Web Vitals scores. Developers write lightweight blocks, and authors use familiar tools.",
+  ref: ["Edge Delivery Services overview", DOC + "edge-delivery/overview"] },
+{ id: "T18", o: "3.5", t: "multi",
+  q: "Which authoring approaches can be used with Edge Delivery Services?",
+  opts: ["Document-based authoring in tools such as Microsoft Word or Google Docs", "WYSIWYG authoring in AEM with the Universal Editor", "Editing HTML files directly on the CDN", "Authoring in CRXDE Lite"],
+  a: [0, 1],
+  ex: "Authors can write in documents stored in SharePoint or Google Drive, or edit visually with the Universal Editor on AEM content. Both publish through Edge Delivery Services.",
+  ref: ["WYSIWYG authoring with Edge Delivery Services", DOC + "edge-delivery/wysiwyg-authoring/authoring"] },
+{ id: "T19", o: "3.5",
+  q: "In document-based authoring for Edge Delivery Services, which tool do authors use to preview and publish a document?",
+  opts: ["AEM Sidekick", "Package Manager", "The Emulator", "The Live Copy Overview"],
+  a: [0],
+  ex: "Sidekick is a browser extension. From the document or the page, authors preview changes, publish them and switch between environments.",
+  ref: ["AEM Sidekick", "https://www.aem.live/docs/sidekick"] },
+{ id: "T20", o: "3.5",
+  q: "An Edge Delivery Services site has a page at `main--wknd--acme.aem.page` and the same page at `main--wknd--acme.aem.live`. What's the difference?",
+  opts: ["`.aem.page` shows the previewed version; `.aem.live` shows the published version", "`.aem.page` is for desktop; `.aem.live` is for mobile", "`.aem.page` is the author service; `.aem.live` is the dispatcher", "There is no difference; both are aliases"],
+  a: [0],
+  ex: "Previewing a document updates the `.page` URL so authors can check it. Publishing updates the `.live` URL, which the production domain serves.",
+  ref: ["Edge Delivery Services documentation", "https://www.aem.live/docs/"] },
+
+/* ---------------- Section 4: Content Delivery ---------------- */
+{ id: "D01", o: "4.1",
+  q: "The same product information must appear on the website, in a mobile app and on in-store screens. What's the best practice?",
+  opts: ["Create it once as Content Fragments and deliver it to each channel through APIs such as GraphQL", "Copy the text into separate pages for each channel", "Create an Experience Fragment per channel and retype the text", "Export a PDF for each channel"],
+  a: [0],
+  ex: "Structured, channel-neutral content is created once and delivered everywhere. Every channel shows the same approved information, and updates happen in one place.",
+  ref: ["Headless introduction", DOC + "headless/introduction"] },
+{ id: "D02", o: "4.1",
+  q: "A promotion built in AEM with components and layout must be used in Adobe Target activities. How should it get there?",
+  opts: ["Export the Experience Fragment to Adobe Target as an offer", "Copy the page HTML into Target by hand", "Publish the page and link to it from Target", "Create a Content Fragment and attach it in Target"],
+  a: [0],
+  ex: "Experience Fragments can be exported to Target, where they become offers for tests and personalization activities. Authors keep editing them in AEM.",
+  ref: ["Experience Fragments", DOC + "sites/authoring/fragments/experience-fragments"] },
+{ id: "D03", o: "4.1",
+  q: "An external email tool needs the HTML of an AEM promotion without the site's header, footer and scripts. What can it use?",
+  opts: ["The Experience Fragment's plain HTML rendition, requested with the `.plain.html` selector", "The page's `.model.json` output", "A screenshot of the page", "The Live Copy Overview"],
+  a: [0],
+  ex: "The plain HTML rendition returns just the fragment's markup, which third-party channels such as email can include.",
+  ref: ["Experience Fragments", DOC + "sites/authoring/fragments/experience-fragments"] },
+{ id: "D04", o: "4.1",
+  q: "Product videos must play smoothly both on slow mobile networks and on fast desktop connections. Which feature helps?",
+  opts: ["Dynamic Media video with adaptive streaming", "Uploading one large MP4 file", "Experience Fragment variations", "Smart Tags"],
+  a: [0],
+  ex: "Adaptive streaming encodes several bitrates, and the player switches between them according to the device and connection.",
+  ref: ["Dynamic Media video", DOC + "assets/dynamicmedia/video"] },
+{ id: "D05", o: "4.1",
+  q: "What is the main benefit of headless delivery from AEM?",
+  opts: ["One content source can serve any front end or channel, and front-end teams can use their own frameworks", "Authors no longer need to approve content", "It removes the need for a CDN", "Pages render faster in the page editor"],
+  a: [0],
+  ex: "Headless separates content from presentation. AEM manages and delivers content through APIs, and apps, sites and devices present it their own way.",
+  ref: ["Headless introduction", DOC + "headless/introduction"] },
+{ id: "D06", o: "4.1",
+  q: "Which practice keeps content consistent across many touchpoints?",
+  opts: ["Reference shared content, such as fragments and assets, instead of copying it into each channel", "Let each channel team keep its own copy of the content", "Store channel content in spreadsheets outside AEM", "Create a new page for every channel and device"],
+  a: [0],
+  ex: "When channels reference one source, an update reaches all of them and nothing drifts out of date. The References rail then shows where each item is used.",
+  ref: ["Content Fragments overview", DOC + "sites/administering/content-fragments/overview"] },
+{ id: "D07", o: "4.2",
+  q: "A workflow's approval step must go to the Brand Approvers group. How is it set up, and what happens when it runs?",
+  opts: ["A Participant Step with the group as the participant; the task appears in every member's Inbox and one of them completes it", "A Process Step with the group's name as an argument; every member must approve it separately", "A Participant Step assigned to each member one after another", "An email to the group, outside AEM"],
+  a: [0],
+  ex: "Assigning a participant step to a group puts the work item in each member's Inbox. Whoever acts first completes the step for the whole group.",
+  ref: ["Participating in workflows", DOC + "sites/authoring/workflows/participating"] },
+{ id: "D08", o: "4.2",
+  q: "Where do approvers see the workflow tasks assigned to them?",
+  opts: ["In the AEM Inbox", "In the Timeline rail of the DAM root", "In Package Manager", "In the page's Navigation Title"],
+  a: [0],
+  ex: "The Inbox collects notifications and tasks from workflows, including items assigned to groups the user belongs to.",
+  ref: ["Your Inbox", DOC + "sites/authoring/inbox"] },
+{ id: "D09", o: "4.2",
+  q: "Approval must go to US approvers for US pages and UK approvers for UK pages, decided when the workflow runs. Which step type fits?",
+  opts: ["A Dynamic Participant Step", "A Participant Step assigned to the administrators group", "A Process Step with no participant", "An OR Split that emails both teams"],
+  a: [0],
+  ex: "A Dynamic Participant Step chooses the user or group at runtime, for example from the page's path. A normal Participant Step is always assigned to the same user or group.",
+  ref: ["Participating in workflows", DOC + "sites/authoring/workflows/participating"] },
+{ id: "D10", o: "4.2",
+  q: "Why should workflow steps be assigned to groups rather than to named users?",
+  opts: ["When people join or leave, only group membership changes, not the workflow model, and the work is shared among members", "Workflows can't be assigned to individual users", "Group steps run faster", "Group steps skip approval"],
+  a: [0],
+  ex: "Group assignment keeps workflow models stable and avoids bottlenecks when one person is away.",
+  ref: ["Applying workflows to pages", DOC + "sites/authoring/workflows/applying"] },
+{ id: "D11", o: "4.2",
+  q: "An author who doesn't have publish permission selects Publish on a page. What does AEM do?",
+  opts: ["It starts a request for publication workflow, so someone with the permission can approve and publish the page", "It publishes the page anyway", "It deletes the author's changes", "It creates a Launch of the page"],
+  a: [0],
+  ex: "Without publish permission, the publish action starts a workflow that notifies the people who can publish. This is how approval is built into publishing.",
+  ref: ["Publishing pages", DOC + "sites/authoring/sites-console/publishing-pages"] },
+{ id: "D12", o: "4.3",
+  q: "Which page editor feature lets authors check how a page looks at phone and tablet widths?",
+  opts: ["The Emulator", "Timewarp", "Developer mode", "The Live Copy Overview"],
+  a: [0],
+  ex: "The Emulator in the page editor toolbar shows the page at the widths of different devices. In Layout mode you can then adjust components for each breakpoint.",
+  ref: ["Responsive layout", DOC + "sites/authoring/page-editor/responsive-layout"] },
+{ id: "D13", o: "4.3",
+  q: "On desktop, three teasers sit side by side; on phones they should stack. Where do authors set this?",
+  opts: ["In Layout mode, by resizing the components for each breakpoint", "In the Style System", "In page properties", "In the template's Initial Content"],
+  a: [0],
+  ex: "Layout mode lets authors resize and hide components per breakpoint in the layout container. Together with the Emulator, this covers responsive behavior without code changes.",
+  ref: ["Responsive layout", DOC + "sites/authoring/page-editor/responsive-layout"] },
+{ id: "D14", o: "4.3",
+  q: "An author wants to click links and try interactive components as a visitor would, without leaving the editor. Which mode should they use?",
+  opts: ["Preview mode", "Edit mode", "Layout mode", "Structure mode"],
+  a: [0],
+  ex: "Preview mode shows the page as visitors see it, with working links and components, inside the editor. You can switch back to Edit at any time.",
+  ref: ["Page editor introduction", DOC + "sites/authoring/page-editor/introduction"] },
+{ id: "D15", o: "4.4", t: "multi",
+  q: "A new editable template doesn't appear in the Create Page wizard under the site's root. What's usually missing?",
+  opts: ["The template hasn't been enabled", "The template isn't allowed for that part of the site (Allowed Templates)", "The template hasn't been published to the publish tier", "The template has no Initial Content"],
+  a: [0, 1],
+  ex: "A template must be enabled, and the page under which you create content must allow it through Allowed Templates. Publishing the template matters for publish, not for creating pages on author.",
+  ref: ["Creating page templates", DOC + "sites/authoring/sites-console/templates"] },
+{ id: "D16", o: "4.4",
+  q: "Authors must only be able to add Text, Image and Teaser to the main area of article pages. Where is this set?",
+  opts: ["In the policy of the layout container, in the template's Structure mode", "In each article's page properties", "In the Style System", "In the dispatcher filters"],
+  a: [0],
+  ex: "Content policies on the template set the allowed components for each container. Every page created from the template follows them.",
+  ref: ["Creating page templates", DOC + "sites/authoring/sites-console/templates"] },
+{ id: "D17", o: "4.4",
+  q: "The header and footer must be identical on every page and authors must not edit them, while the main area stays editable. How is this done in the template?",
+  opts: ["Keep the header and footer locked in Structure mode and unlock the main container", "Put the header and footer in Initial Content", "Hide the header and footer from navigation", "Add the header and footer to every page by hand"],
+  a: [0],
+  ex: "Components in the template's structure are locked by default and shared by all pages. Unlocking the main container lets authors add content there.",
+  ref: ["Creating page templates", DOC + "sites/authoring/sites-console/templates"] },
+{ id: "D18", o: "4.4",
+  q: "On article pages, the Image component must only offer certain widths and must not allow cropping. Where is this configured?",
+  opts: ["In the Image component's policy on the template", "In each image's asset metadata", "In the Emulator", "In the page's Vanity URL"],
+  a: [0],
+  ex: "Component policies hold design settings such as allowed widths, cropping and heading levels. Authors work within those limits on every page that uses the template.",
+  ref: ["Creating page templates", DOC + "sites/authoring/sites-console/templates"] },
+{ id: "D19", o: "4.4",
+  q: "What is the difference between a template's Structure and its Initial Content?",
+  opts: ["Structure is shared by all pages and changes apply to existing pages; Initial Content is copied into new pages, where authors can change it freely", "Structure is for desktop and Initial Content is for mobile", "Structure holds images and Initial Content holds text", "There is no difference; they are two names for the same mode"],
+  a: [0],
+  ex: "Structure stays linked to the template. Initial Content is only a starting point, so later changes to it only affect pages created afterwards.",
+  ref: ["Creating page templates", DOC + "sites/authoring/sites-console/templates"] },
+{ id: "D20", o: "4.4",
+  q: "A template author adds a newsletter sign-up component, locked, to the Structure of a template that already has 300 pages. What happens to those pages?",
+  opts: ["They all show the new component, because pages stay linked to their template's structure", "Only pages created from now on get it", "The existing pages must be recreated", "The pages must be rolled out from a blueprint first"],
+  a: [0],
+  ex: "Editable templates are dynamic: structure changes reach existing pages. Changes to Initial Content don't.",
+  ref: ["Creating page templates", DOC + "sites/authoring/sites-console/templates"] },
+
+/* ---------------- Section 5: Business Analysis ---------------- */
+{ id: "B01", o: "5.1",
+  q: "Why does the page hierarchy matter so much in AEM?",
+  opts: ["It shapes URLs, navigation and breadcrumbs, and sets the scope for permissions, MSM and translation", "It only affects how pages are listed in the Sites console", "It decides which fonts each page uses", "It has no effect once pages are published"],
+  a: [0],
+  ex: "Navigation and breadcrumb components read the tree, permissions are inherited down it, and MSM and translation work on branches of it. Changing it later means moving content, URLs and settings.",
+  ref: ["Organizing pages in the Sites console", DOC + "sites/authoring/sites-console/organizing-pages"] },
+{ id: "B02", o: "5.1",
+  q: "Which principle should guide the structure of the website hierarchy?",
+  opts: ["Organize pages around how visitors look for information, in clear sections that aren't deeper than they need to be", "Mirror the company's internal organization chart", "Put all pages directly under the home page", "Nest pages as deeply as possible to group details"],
+  a: [0],
+  ex: "A visitor-centered, reasonably shallow structure gives clear navigation and readable URLs. An org chart changes more often than what customers look for.",
+  ref: ["Organizing pages in the Sites console", DOC + "sites/authoring/sites-console/organizing-pages"] },
+{ id: "B03", o: "5.1",
+  q: "A proposed hierarchy nests pages nine levels deep. What is the main problem?",
+  opts: ["Long URLs and navigation that's hard to use for both visitors and authors", "AEM can't store more than five levels", "Deep pages can't be translated", "Deep pages can't be published"],
+  a: [0],
+  ex: "AEM can store deep trees, but people struggle to navigate them and URLs become long. Flatter structures are easier to use and to maintain.",
+  ref: ["Organizing pages in the Sites console", DOC + "sites/authoring/sites-console/organizing-pages"] },
+{ id: "B04", o: "5.1",
+  q: "Where should content shared by all pages of a site, such as the header and footer, be managed?",
+  opts: ["In Experience Fragments, organized per site and language", "Copied into every page", "In the page properties of the home page", "In a separate site that visitors navigate to"],
+  a: [0],
+  ex: "Experience Fragments under `/content/experience-fragments`, organized the same way as the site, can be referenced by templates, translated and rolled out with MSM.",
+  ref: ["Experience Fragments", DOC + "sites/authoring/fragments/experience-fragments"] },
+{ id: "B05", o: "5.1",
+  q: "When planning a multi-country site, which decision should be made early because it's hard to change later?",
+  opts: ["How language masters and country/language roots are structured", "The color of buttons", "The wording of the cookie banner", "Which Smart Tags to use"],
+  a: [0],
+  ex: "MSM relationships, translation, permissions and URLs all depend on the root structure. Moving it later means reworking all of them.",
+  ref: ["MSM best practices", DOC + "sites/administering/reusing-content/msm/best-practices"] },
+{ id: "B06", o: "5.2",
+  q: "How does AEM help a business launch a new country site faster?",
+  opts: ["Reusable templates and components plus MSM let business teams create and roll out the site with little or no new development", "AEM writes the site's content automatically", "AEM removes the need for translation", "AEM installs a new server for each country"],
+  a: [0],
+  ex: "Once the component library and templates exist, a new site is mostly content work. MSM can create it from the master and keep it updated.",
+  ref: ["Multi Site Manager overview", DOC + "sites/administering/reusing-content/msm/overview"] },
+{ id: "B07", o: "5.2",
+  q: "What business benefit comes from connecting AEM with Adobe Analytics and Adobe Target?",
+  opts: ["Teams can measure how content performs and personalize it for audiences as part of their normal publishing work", "Pages no longer need approval", "Assets no longer need metadata", "AEM no longer needs a CDN"],
+  a: [0],
+  ex: "With the integrations, content teams see results and run tests and personalization on the same content they manage in AEM.",
+  ref: ["Adobe Target documentation", "https://experienceleague.adobe.com/en/docs/target"] },
+{ id: "B08", o: "5.2",
+  q: "What business benefit does a hybrid setup, with server-rendered pages plus headless delivery, bring?",
+  opts: ["One content source serves websites, apps and other channels, which reduces duplicate work", "It removes the need for authors", "It makes every page static and unchangeable", "It replaces the DAM"],
+  a: [0],
+  ex: "Hybrid lets marketers keep in-context page editing while apps and other channels use the same content through APIs.",
+  ref: ["Headless introduction", DOC + "headless/introduction"] },
+{ id: "B09", o: "5.2",
+  q: "What does a single DAM in AEM Assets give the business?",
+  opts: ["One source of truth for approved assets, with rights information, metadata and reuse across channels", "Unlimited free stock photos", "Automatic creation of new brand guidelines", "A replacement for the website"],
+  a: [0],
+  ex: "Teams stop keeping their own copies, use the latest approved versions, and can see usage rights and expiry dates.",
+  ref: ["Content Hub overview", DOC + "assets/content-hub/product-overview"] },
+{ id: "B10", o: "5.2",
+  q: "Which AEM capabilities support governance and compliance?",
+  opts: ["Approval workflows, group-based permissions and version history", "The Emulator and Layout mode", "Smart Crop and image presets", "Vanity URLs and Navigation Titles"],
+  a: [0],
+  ex: "Workflows make approvals traceable, permissions control who can do what, and versions show what was published and when.",
+  ref: ["Applying workflows to pages", DOC + "sites/authoring/workflows/applying"] }
+];
+
+/* =====================================================================
+   App
+   ===================================================================== */
+(function () {
+  "use strict";
+
+  const SKEY = "aem-bp-mock:v1:session";
+  const HKEY = "aem-bp-mock:v1:history";
+  const PKEY = "aem-bp-mock:v1:practice";
+  const KEYS = "ABCDE";
+  const WORDS = { 2: "two", 3: "three" };
+  const SEC_IDS = Object.keys(SECTIONS).map(Number);
+
+  const byId = Object.fromEntries(QUESTIONS.map(q => [q.id, q]));
+  const secOf = q => Number(q.o.split(".")[0]);
+  const poolCount = s => QUESTIONS.filter(q => secOf(q) === s).length;
+  const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } },
+    del(k) { try { localStorage.removeItem(k); } catch (e) { /* storage unavailable */ } }
+  };
+
+  const $bar = document.getElementById("bar");
+  const $app = document.getElementById("app");
+
+  let S = store.get(SKEY, null);
+  let view = "home";
+  let confirmOpen = false;
+  let reviewFilter = "all";
+  let tick = null;
+
+  /* ---------- helpers ---------- */
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c]));
+  }
+  function md(s) { return esc(s).replace(/`([^`]+)`/g, "<code>$1</code>"); }
+  function fmt(ms) {
+    ms = Math.max(0, ms);
+    const m = Math.floor(ms / 60000), s = Math.floor((ms % 60000) / 1000);
+    return m + ":" + String(s).padStart(2, "0");
+  }
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  }
+  function plural(n, one, many) { return n + " " + (n === 1 ? one : many); }
+  function dateLabel(t) {
+    try { return new Date(t).toLocaleString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); }
+    catch (e) { return new Date(t).toISOString().slice(0, 16).replace("T", " "); }
+  }
+  function save() { if (S) store.set(SKEY, S); else store.del(SKEY); }
+  function passMark(n) { return n === EXAM.total ? EXAM.pass : Math.ceil(n * PASS_RATIO); }
+  function isRight(it) {
+    const a = byId[it.id].a;
+    return it.picked.length === a.length && a.every(x => it.picked.includes(x));
+  }
+  function answeredCount() { return S.items.filter(i => i.picked.length).length; }
+  function score() {
+    const bySec = {};
+    SEC_IDS.forEach(s => { bySec[s] = [0, 0]; });
+    let correct = 0;
+    S.items.forEach(it => {
+      const s = secOf(byId[it.id]);
+      bySec[s][1]++;
+      if (isRight(it)) { bySec[s][0]++; correct++; }
+    });
+    return { correct, total: S.items.length, bySec };
+  }
+  function validSession(x) {
+    return x && Array.isArray(x.items) && x.items.length > 0 &&
+      x.items.every(i => byId[i.id] && Array.isArray(i.order) && i.order.length === byId[i.id].opts.length && Array.isArray(i.picked));
+  }
+
+  /* ---------- starting attempts ---------- */
+  function makeItem(q) { return { id: q.id, order: shuffle(q.opts.map((_, i) => i)), picked: [], flagged: false, checked: false }; }
+
+  function startExam() {
+    const items = [];
+    SEC_IDS.forEach(s => {
+      shuffle(QUESTIONS.filter(q => secOf(q) === s)).slice(0, SECTIONS[s].draw).forEach(q => items.push(makeItem(q)));
+    });
+    const now = Date.now();
+    S = { mode: "exam", items: shuffle(items), cur: 0, started: now, deadline: now + EXAM.minutes * 60000, done: null };
+    confirmOpen = false;
+    save(); startTick(); go("run");
+  }
+
+  function startPractice(secs, count) {
+    const pool = shuffle(QUESTIONS.filter(q => secs.includes(secOf(q))));
+    const n = count === "all" ? pool.length : Math.min(Number(count), pool.length);
+    S = { mode: "practice", secs, items: pool.slice(0, n).map(makeItem), cur: 0, started: Date.now(), deadline: null, done: null };
+    confirmOpen = false;
+    save(); startTick(); go("run");
+  }
+
+  function finish(auto) {
+    if (!S || S.done) return;
+    S.done = Date.now();
+    S.auto = !!auto;
+    const r = score();
+    const used = (S.deadline ? Math.min(S.done, S.deadline) : S.done) - S.started;
+    const hist = store.get(HKEY, []);
+    hist.unshift({ at: S.done, mode: S.mode, correct: r.correct, total: r.total, used });
+    store.set(HKEY, hist.slice(0, 12));
+    clearInterval(tick);
+    confirmOpen = false;
+    reviewFilter = "all";
+    save();
+    go("results");
+  }
+
+  function startTick() {
+    clearInterval(tick);
+    if (!S || S.done || S.mode !== "exam") return;
+    tick = setInterval(() => {
+      const left = S.deadline - Date.now();
+      document.querySelectorAll("[data-timer]").forEach(t => {
+        t.textContent = fmt(left);
+        t.classList.toggle("warn", left < 10 * 60000);
+      });
+      if (left <= 0) finish(true);
+    }, 1000);
+  }
+
+  /* ---------- navigation ---------- */
+  function go(v) {
+    view = v;
+    render();
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }
+
+  function render(opts) {
+    renderBar();
+    if (view === "run" && S && !S.done) $app.innerHTML = runHTML();
+    else if (view === "results" && S && S.done) $app.innerHTML = resultsHTML();
+    else { view = "home"; $app.innerHTML = homeHTML(); }
+    if (view === "run") afterRun(opts || {});
+    if (view === "results") applyFilter();
+  }
+
+  function renderBar() {
+    if (view === "run" && S && !S.done) {
+      const n = S.items.length, done = answeredCount();
+      $bar.innerHTML =
+        "<div class=\"bar-in\">" +
+          "<button class=\"brand\" data-act=\"home\" title=\"Back to the start page\">AD0-E138 <b>mock</b></button>" +
+          "<div class=\"progress\" role=\"progressbar\" aria-label=\"Questions answered\" aria-valuemin=\"0\" aria-valuemax=\"" + n + "\" aria-valuenow=\"" + done + "\"><span style=\"width:" + (done / n * 100) + "%\"></span></div>" +
+          (S.mode === "exam"
+            ? "<span class=\"timer" + (S.deadline - Date.now() < 600000 ? " warn" : "") + "\" data-timer aria-label=\"Time left\">" + fmt(S.deadline - Date.now()) + "</span>"
+            : "<span class=\"bar-note\">Practice</span>") +
+        "</div>";
+    } else {
+      $bar.innerHTML =
+        "<div class=\"bar-in\">" +
+          "<button class=\"brand\" data-act=\"home\">AD0-E138 <b>mock</b></button>" +
+          "<span class=\"bar-spacer\"></span>" +
+          "<span class=\"bar-note hide-sm\">Unofficial practice exam</span>" +
+        "</div>";
+    }
+  }
+
+  /* ---------- home ---------- */
+  function homeHTML() {
+    const prefs = store.get(PKEY, { secs: SEC_IDS, count: "20" });
+    const hist = store.get(HKEY, []);
+    let banner = "";
+    if (S && !S.done) {
+      banner =
+        "<section class=\"banner\" aria-label=\"Attempt in progress\">" +
+          "<p><strong>" + (S.mode === "exam" ? "Exam" : "Practice") + " in progress.</strong> " +
+          answeredCount() + " of " + S.items.length + " answered" +
+          (S.mode === "exam" ? ", <span class=\"mono\" data-timer>" + fmt(S.deadline - Date.now()) + "</span> left" : "") + ".</p>" +
+          "<div class=\"row\"><button class=\"btn btn-primary\" data-act=\"resume\">Resume</button>" +
+          "<button class=\"btn\" data-act=\"discard\">Discard attempt</button></div>" +
+        "</section>";
+    } else if (S && S.done) {
+      const r = score();
+      banner =
+        "<section class=\"banner\" aria-label=\"Last attempt\">" +
+          "<p><strong>Last attempt:</strong> " + r.correct + " of " + r.total + " correct (" + Math.round(r.correct / r.total * 100) + "%).</p>" +
+          "<div class=\"row\"><button class=\"btn\" data-act=\"results\">Review answers</button></div>" +
+        "</section>";
+    }
+
+    const secPicks = SEC_IDS.map(s =>
+      "<label class=\"check\" for=\"ps-" + s + "\">" +
+        "<input type=\"checkbox\" id=\"ps-" + s + "\" value=\"" + s + "\"" + (prefs.secs.includes(s) ? " checked" : "") + ">" +
+        "<span>" + s + ". " + esc(SECTIONS[s].name) + "</span>" +
+        "<span class=\"muted mono\">" + poolCount(s) + "</span>" +
+      "</label>").join("");
+    const countOpts = [["10", "10 questions"], ["20", "20 questions"], ["40", "40 questions"], ["all", "Every question in those sections"]]
+      .map(([v, l]) => "<option value=\"" + v + "\"" + (prefs.count === v ? " selected" : "") + ">" + l + "</option>").join("");
+
+    const rows = SEC_IDS.map(s => {
+      const objs = Object.keys(OBJECTIVES).filter(k => Number(k.split(".")[0]) === s)
+        .map(k => "<li><span class=\"mono\">" + k + "</span>" + esc(OBJECTIVES[k]) + "</li>").join("");
+      return "<tr>" +
+        "<td><span class=\"sec-name\">" + s + ". " + esc(SECTIONS[s].name) + "</span><ul class=\"objs\">" + objs + "</ul></td>" +
+        "<td class=\"num\">" + SECTIONS[s].weight + "%<span class=\"wbar\" aria-hidden=\"true\"><span style=\"width:" + (SECTIONS[s].weight / 28 * 100) + "%\"></span></span></td>" +
+        "<td class=\"num\">" + SECTIONS[s].draw + "</td>" +
+        "<td class=\"num\">" + poolCount(s) + "</td>" +
+      "</tr>";
+    }).join("");
+
+    const histHTML = hist.length
+      ? "<ul class=\"hist\">" + hist.map(h => {
+          const pm = passMark(h.total), ok = h.correct >= pm;
+          return "<li><span><strong>" + (h.mode === "exam" ? "Full exam" : "Practice") + "</strong> <span class=\"when\">" + esc(dateLabel(h.at)) +
+            (h.mode === "exam" ? " · " + Math.max(1, Math.round(h.used / 60000)) + " min" : "") + "</span></span>" +
+            "<span class=\"mono\">" + h.correct + "/" + h.total + "</span>" +
+            "<span class=\"chip " + (ok ? "ok" : "bad") + "\">" + (ok ? "Pass" : "Below pass") + "</span></li>";
+        }).join("") + "</ul>"
+      : "<p class=\"empty\">Finished attempts appear here. They're saved in this browser only.</p>";
+
+    return (
+      "<section class=\"intro\">" +
+        "<p class=\"eyebrow\">AD0-E138 · Adobe Experience Manager Business Practitioner Professional</p>" +
+        "<h1>AEM Business Practitioner mock exam</h1>" +
+        "<p class=\"lede\">Original practice questions mapped to the five sections and twenty objectives of the AD0-E138 exam. They cover AEM Sites, AEM Assets and AEM as a Cloud Service from a business practitioner's point of view.</p>" +
+        "<dl class=\"facts\">" +
+          "<div><dt>Questions</dt><dd>" + EXAM.total + "</dd></div>" +
+          "<div><dt>Minutes</dt><dd>" + EXAM.minutes + "</dd></div>" +
+          "<div><dt>To pass</dt><dd>" + EXAM.pass + "</dd></div>" +
+          "<div><dt>In the bank</dt><dd>" + QUESTIONS.length + "</dd></div>" +
+        "</dl>" +
+      "</section>" +
+      banner +
+      "<div class=\"modes\">" +
+        "<article class=\"mode mode-primary\">" +
+          "<h2>Full exam</h2>" +
+          "<p>" + EXAM.total + " questions drawn by the exam's section weights, a " + EXAM.minutes + "-minute timer, and a score report with explanations once you submit. You need " + EXAM.pass + " correct answers to pass.</p>" +
+          "<button class=\"btn btn-primary\" data-act=\"start-exam\">Start full exam</button>" +
+        "</article>" +
+        "<article class=\"mode\">" +
+          "<h2>Practice</h2>" +
+          "<p>Choose sections and check each answer as you go, with the explanation and a link to Adobe's documentation. No timer.</p>" +
+          "<fieldset class=\"picks\"><legend>Sections</legend>" + secPicks + "</fieldset>" +
+          "<label class=\"field\" for=\"pcount\"><span>Length</span><select id=\"pcount\">" + countOpts + "</select></label>" +
+          "<p class=\"err\" id=\"perr\" role=\"alert\" hidden>Choose at least one section.</p>" +
+          "<button class=\"btn\" data-act=\"start-practice\">Start practice</button>" +
+        "</article>" +
+      "</div>" +
+      "<section class=\"block\" aria-labelledby=\"bp-h\">" +
+        "<div class=\"block-head\"><h2 id=\"bp-h\">Exam blueprint</h2>" +
+        "<p>Sections, weights and objectives come from Adobe's AD0-E138 certification page. The real exam scores " + EXAM.total + " questions, passes at " + EXAM.pass + " and may include up to 10 extra unscored questions.</p></div>" +
+        "<div class=\"table-wrap\"><table>" +
+          "<thead><tr><th scope=\"col\">Section and objectives</th><th scope=\"col\">Weight</th><th scope=\"col\">Per exam</th><th scope=\"col\">In bank</th></tr></thead>" +
+          "<tbody>" + rows + "</tbody>" +
+        "</table></div>" +
+      "</section>" +
+      "<section class=\"block\" aria-labelledby=\"hist-h\">" +
+        "<div class=\"block-head\"><h2 id=\"hist-h\">Your attempts</h2></div>" + histHTML +
+      "</section>" +
+      "<footer class=\"foot\">" +
+        "<p>Unofficial study aid, not affiliated with or endorsed by Adobe. The questions are original and written against the published exam objectives; they aren't questions from the real exam.</p>" +
+        "<p>AEM as a Cloud Service changes often, so check anything that looks off against the linked documentation. Official details: <a href=\"https://certification.adobe.com/certification/business-practitioner-professional-v2/539\" target=\"_blank\" rel=\"noopener\">AD0-E138 on Adobe Certification</a>.</p>" +
+      "</footer>"
+    );
+  }
+
+  /* ---------- exam console ---------- */
+  function codeHTML(q) {
+    if (!q.code) return "";
+    return "<pre class=\"code\"><span class=\"code-lang\">" + esc(q.lang || "") + "</span><code>" + esc(q.code) + "</code></pre>";
+  }
+  function explainHTML(q) {
+    return "<div class=\"explain\"><p class=\"label\">Why</p><p>" + md(q.ex) + "</p>" +
+      "<p class=\"ref\"><a href=\"" + esc(q.ref[1]) + "\" target=\"_blank\" rel=\"noopener\">" + esc(q.ref[0]) + "</a> <span aria-hidden=\"true\">↗</span></p></div>";
+  }
+  function hintText(q) {
+    return q.a.length > 1 ? "Choose " + (WORDS[q.a.length] || q.a.length) + " answers." : "Choose one answer.";
+  }
+
+  function runHTML() {
+    const it = S.items[S.cur], q = byId[it.id], s = secOf(q), n = S.items.length;
+    const multi = q.a.length > 1;
+    const reveal = S.mode === "practice" && it.checked;
+    const last = S.cur === n - 1;
+
+    const opts = it.order.map((oi, k) => {
+      const picked = it.picked.includes(oi), isAns = q.a.includes(oi);
+      let cls = picked ? "picked" : "", mark = "";
+      if (reveal) {
+        cls = isAns ? "right" : picked ? "wrong" : "";
+        mark = isAns ? (picked ? "Your answer · correct" : "Correct answer") : picked ? "Your answer" : "";
+      }
+      return "<label class=\"opt " + cls + (reveal ? " locked" : "") + "\" for=\"opt-" + k + "\">" +
+        "<input type=\"" + (multi ? "checkbox" : "radio") + "\" name=\"opt\" id=\"opt-" + k + "\" value=\"" + oi + "\"" +
+          (picked ? " checked" : "") + (reveal ? " disabled" : "") + ">" +
+        "<span class=\"opt-key\" aria-hidden=\"true\">" + KEYS[k] + "</span>" +
+        "<span class=\"opt-text\">" + md(q.opts[oi]) + "</span>" +
+        (mark ? "<span class=\"opt-mark\">" + mark + "</span>" : "") +
+      "</label>";
+    }).join("");
+
+    let feedback = "";
+    if (reveal) {
+      const ok = isRight(it);
+      feedback = "<div class=\"feedback\" role=\"status\"><p class=\"verdict-line " + (ok ? "ok" : "bad") + "\">" +
+        (ok ? "Correct." : "Not quite. The correct " + (multi ? "answers are" : "answer is") + " marked in green.") + "</p>" + explainHTML(q) + "</div>";
+    }
+
+    const enough = it.picked.length === q.a.length;
+    let primary;
+    if (S.mode === "practice" && !it.checked) {
+      primary = "<button class=\"btn btn-primary\" data-act=\"check\"" + (enough ? "" : " disabled") + ">Check answer</button>" +
+        "<button class=\"btn\" data-act=\"" + (last ? "submit" : "next") + "\">" + (last ? "Finish" : "Skip") + "</button>";
+    } else {
+      primary = "<button class=\"btn btn-primary\" data-act=\"" + (last ? "submit" : "next") + "\">" +
+        (last ? (S.mode === "exam" ? "Review and submit" : "Finish practice") : "Next question") + "</button>";
+    }
+
+    const cells = S.items.map((x, i) => {
+      const c = ["cell"];
+      if (S.mode === "practice" && x.checked) c.push(isRight(x) ? "right" : "wrong");
+      else if (x.picked.length) c.push("answered");
+      if (x.flagged) c.push("flagged");
+      if (i === S.cur) c.push("current");
+      const state = (x.picked.length ? "answered" : "unanswered") + (x.flagged ? ", flagged" : "");
+      return "<li><button class=\"" + c.join(" ") + "\" data-act=\"goto\" data-i=\"" + i + "\" aria-label=\"Question " + (i + 1) + ", " + state + "\"" +
+        (i === S.cur ? " aria-current=\"step\"" : "") + ">" + (i + 1) + "</button></li>";
+    }).join("");
+
+    const legend = S.mode === "practice"
+      ? "<li><span class=\"sw answered\"></span>Answered</li><li><span class=\"sw right\"></span>Correct</li><li><span class=\"sw wrong\"></span>Wrong</li><li><span class=\"sw flagged\"></span>Flagged</li>"
+      : "<li><span class=\"sw answered\"></span>Answered</li><li><span class=\"sw\"></span>Not answered</li><li><span class=\"sw flagged\"></span>Flagged</li>";
+
+    let dialog = "";
+    if (confirmOpen) {
+      const un = n - answeredCount(), fl = S.items.filter(x => x.flagged).length;
+      const exam = S.mode === "exam";
+      dialog =
+        "<div class=\"overlay\" data-act=\"cancel-submit\">" +
+          "<div class=\"dialog\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"dlg-h\" data-stop>" +
+            "<h2 id=\"dlg-h\">" + (exam ? "Submit your exam?" : "Finish this practice set?") + "</h2>" +
+            "<p>You've answered " + answeredCount() + " of " + n + " questions." +
+              (un ? " " + plural(un, "question is", "questions are") + " unanswered and will count as wrong." : "") +
+              (fl ? " " + plural(fl, "question is", "questions are") + " flagged for review." : "") +
+              (exam ? " You can't change answers after submitting." : "") + "</p>" +
+            "<div class=\"row\"><button class=\"btn\" data-act=\"cancel-submit\" id=\"dlg-cancel\">Keep working</button>" +
+            "<button class=\"btn btn-primary\" data-act=\"confirm-submit\">" + (exam ? "Submit exam" : "See results") + "</button></div>" +
+          "</div>" +
+        "</div>";
+    }
+
+    return (
+      "<div class=\"run\">" +
+        "<section class=\"qpane\" aria-labelledby=\"qtitle\">" +
+          "<p class=\"eyebrow\"><span class=\"mono\">Question " + (S.cur + 1) + " of " + n + "</span> · " + q.o + " " + esc(OBJECTIVES[q.o]) + "</p>" +
+          "<h1 class=\"qtext\" id=\"qtitle\" tabindex=\"-1\">" + md(q.q) + "</h1>" +
+          codeHTML(q) +
+          "<p class=\"hint" + (multi ? " multi" : "") + "\">" + hintText(q) + "</p>" +
+          "<fieldset class=\"opts " + (multi ? "multi-set" : "single-set") + "\"><legend class=\"sr\">Answers</legend>" + opts + "</fieldset>" +
+          feedback +
+          "<div class=\"qactions\">" +
+            "<div class=\"row\">" +
+              "<button class=\"btn\" data-act=\"prev\"" + (S.cur === 0 ? " disabled" : "") + ">Previous</button>" +
+              "<button class=\"btn btn-flag\" data-act=\"flag\" aria-pressed=\"" + (it.flagged ? "true" : "false") + "\">" + (it.flagged ? "Flagged" : "Flag for review") + "</button>" +
+            "</div>" +
+            "<div class=\"row\">" + primary + "</div>" +
+          "</div>" +
+          "<p class=\"keys\">Keyboard: A–" + KEYS[q.opts.length - 1] + " choose · N next · P previous · F flag</p>" +
+        "</section>" +
+        "<aside class=\"rail\" aria-label=\"Question navigator\">" +
+          "<div class=\"rail-head\"><h2>Questions</h2><span class=\"mono muted\">" + answeredCount() + "/" + n + "</span></div>" +
+          "<ol class=\"grid\">" + cells + "</ol>" +
+          "<ul class=\"legend\">" + legend + "</ul>" +
+          "<button class=\"btn " + (S.mode === "exam" ? "btn-primary" : "") + "\" data-act=\"submit\">" + (S.mode === "exam" ? "Submit exam" : "Finish practice") + "</button>" +
+        "</aside>" +
+      "</div>" + dialog
+    );
+  }
+
+  function afterRun(o) {
+    if (confirmOpen) { const b = document.getElementById("dlg-cancel"); if (b) b.focus(); return; }
+    if (o.focusOpt != null) {
+      const el = $app.querySelector("input[name=\"opt\"][value=\"" + o.focusOpt + "\"]");
+      if (el) el.focus({ preventScroll: true });
+    } else if (o.moved) {
+      const h = document.getElementById("qtitle");
+      if (h) h.focus({ preventScroll: true });
+      const top = $app.getBoundingClientRect().top + window.scrollY - 80;
+      if (window.scrollY > top) window.scrollTo({ top: Math.max(0, top), behavior: reduceMotion ? "auto" : "smooth" });
+    }
+  }
+
+  function pick(oi, fromKey) {
+    const it = S.items[S.cur], q = byId[it.id];
+    if (S.mode === "practice" && it.checked) return;
+    const need = q.a.length;
+    if (need === 1) {
+      it.picked = [oi];
+    } else if (it.picked.includes(oi)) {
+      it.picked = it.picked.filter(x => x !== oi);
+    } else {
+      it.picked.push(oi);
+      if (it.picked.length > need) it.picked.shift();
+    }
+    save();
+    render({ focusOpt: fromKey ? null : oi });
+  }
+
+  function move(d) {
+    const i = Math.min(S.items.length - 1, Math.max(0, S.cur + d));
+    if (i === S.cur) return;
+    S.cur = i; save(); render({ moved: true });
+  }
+
+  /* ---------- results ---------- */
+  function resultsHTML() {
+    const r = score(), n = r.total, pm = passMark(n), passed = r.correct >= pm;
+    const exam = S.mode === "exam";
+    const used = (S.deadline ? Math.min(S.done, S.deadline) : S.done) - S.started;
+    const diff = Math.abs(r.correct - pm);
+    const verdict = passed
+      ? (r.correct === pm ? "Pass, exactly at the pass mark of " + pm + "." : "Pass. " + plural(diff, "answer", "answers") + " above the pass mark of " + pm + ".")
+      : "Below the pass mark. " + plural(diff, "more correct answer", "more correct answers") + " needed to reach " + pm + ".";
+
+    const cells = Array.from({ length: n }, (_, k) => "<i class=\"" + (k < r.correct ? "on" : "") + "\"></i>").join("");
+    const gap = n > 60 ? "1px" : "3px";
+
+    const secRows = SEC_IDS.filter(s => r.bySec[s][1] > 0).map(s => {
+      const [c, t] = r.bySec[s], pct = Math.round(c / t * 100);
+      return "<div class=\"sec-row\">" +
+        "<span class=\"label\">" + s + ". " + esc(SECTIONS[s].name) + "<small>" + SECTIONS[s].weight + "% of the exam</small></span>" +
+        "<div class=\"bar2\" role=\"img\" aria-label=\"" + pct + "% correct\"><span class=\"" + (c / t >= PASS_RATIO ? "ok" : "") + "\" style=\"width:" + pct + "%\"></span><i class=\"tick\" style=\"left:" + (PASS_RATIO * 100) + "%\"></i></div>" +
+        "<span class=\"val\">" + c + "/" + t + "</span>" +
+      "</div>";
+    }).join("");
+
+    const missed = S.items.filter(x => !isRight(x)).length;
+    const flagged = S.items.filter(x => x.flagged).length;
+    const filterBtn = (f, label, count) =>
+      "<button class=\"btn\" data-act=\"filter\" data-f=\"" + f + "\" aria-pressed=\"" + (reviewFilter === f ? "true" : "false") + "\">" + label + " <span class=\"mono\">" + count + "</span></button>";
+
+    const navCells = S.items.map((x, i) => {
+      const c = ["cell", isRight(x) ? "right" : "wrong"];
+      if (x.flagged) c.push("flagged");
+      return "<li><button class=\"" + c.join(" ") + "\" data-act=\"jump\" data-i=\"" + i + "\" aria-label=\"Question " + (i + 1) + ", " + (isRight(x) ? "correct" : "missed") + "\">" + (i + 1) + "</button></li>";
+    }).join("");
+
+    const weakest = SEC_IDS.filter(s => r.bySec[s][1] > 0).sort((a, b) => r.bySec[a][0] / r.bySec[a][1] - r.bySec[b][0] / r.bySec[b][1])[0];
+
+    return (
+      "<section class=\"result-hero\" aria-labelledby=\"score-h\">" +
+        "<p class=\"eyebrow\">" + (exam ? "Full exam" : "Practice") + " · " + esc(dateLabel(S.done)) + (exam ? " · " + Math.max(1, Math.round(used / 60000)) + " of " + EXAM.minutes + " min used" : "") + "</p>" +
+        "<h1 class=\"score\" id=\"score-h\">" + r.correct + "<small>/ " + n + "</small></h1>" +
+        "<p class=\"verdict " + (passed ? "pass" : "fail") + "\">" + verdict + "</p>" +
+        (S.auto ? "<p class=\"muted\">Time ran out, so the exam was submitted automatically.</p>" : "") +
+        "<div class=\"strip-wrap\"><div class=\"strip" + (passed ? "" : " fail") + "\" style=\"--n:" + n + ";--g:" + gap + "\" role=\"img\" aria-label=\"" + r.correct + " of " + n + " correct; pass mark " + pm + "\">" + cells +
+          "<span class=\"passline\" style=\"left:calc(" + (pm / n * 100) + "% - 1px)\"><span>Pass " + pm + "</span></span></div></div>" +
+        "<div class=\"row\">" +
+          "<button class=\"btn btn-primary\" data-act=\"start-exam\">New full exam</button>" +
+          (weakest ? "<button class=\"btn\" data-act=\"practice-weak\" data-s=\"" + weakest + "\">Practice " + esc(SECTIONS[weakest].name) + "</button>" : "") +
+          "<button class=\"btn btn-quiet\" data-act=\"home\">Start page</button>" +
+        "</div>" +
+      "</section>" +
+      "<section class=\"block\" aria-labelledby=\"sec-h\">" +
+        "<div class=\"block-head\"><h2 id=\"sec-h\">By section</h2><p>The line marks " + Math.round(PASS_RATIO * 100) + "%, the overall pass rate. The exam is scored on your total, so your weakest sections are where you'll gain the most.</p></div>" +
+        "<div class=\"secs\">" + secRows + "</div>" +
+      "</section>" +
+      "<section class=\"block\" aria-labelledby=\"rv-h\">" +
+        "<div class=\"block-head\"><h2 id=\"rv-h\">Review answers</h2></div>" +
+        "<ol class=\"grid\" aria-label=\"Jump to a question\">" + navCells + "</ol>" +
+        "<div class=\"filters\" role=\"group\" aria-label=\"Filter questions\">" +
+          filterBtn("all", "All", n) + filterBtn("missed", "Missed", missed) + filterBtn("flagged", "Flagged", flagged) +
+        "</div>" +
+        "<div class=\"rv-list\">" + S.items.map(reviewCard).join("") + "</div>" +
+        "<p class=\"empty\" id=\"rv-empty\" hidden>No questions match this filter.</p>" +
+      "</section>"
+    );
+  }
+
+  function reviewCard(it, i) {
+    const q = byId[it.id], right = isRight(it), skipped = !it.picked.length;
+    const status = skipped ? "<span class=\"chip skip\">Unanswered</span>" : right ? "<span class=\"chip ok\">Correct</span>" : "<span class=\"chip bad\">Incorrect</span>";
+    const opts = it.order.map((oi, k) => {
+      const isAns = q.a.includes(oi), isPick = it.picked.includes(oi);
+      const cls = isAns ? "right" : isPick ? "wrong" : "";
+      const note = isAns && isPick ? "Your answer · correct" : isAns ? "Correct answer" : isPick ? "Your answer" : "";
+      return "<li class=\"ropt " + cls + "\"><span class=\"opt-key\" aria-hidden=\"true\">" + KEYS[k] + "</span>" +
+        "<span class=\"opt-text\">" + md(q.opts[oi]) + "</span>" + (note ? "<span class=\"opt-mark\">" + note + "</span>" : "") + "</li>";
+    }).join("");
+    return "<article class=\"rv\" id=\"rv-" + i + "\" data-ok=\"" + (right ? 1 : 0) + "\" data-flag=\"" + (it.flagged ? 1 : 0) + "\">" +
+      "<header class=\"rv-head\"><p class=\"eyebrow\">Question " + (i + 1) + " · " + q.o + " " + esc(OBJECTIVES[q.o]) + "</p>" +
+      "<div class=\"row\">" + (it.flagged ? "<span class=\"chip flag\">Flagged</span>" : "") + status + "</div></header>" +
+      "<p class=\"qtext sm\">" + md(q.q) + "</p>" + codeHTML(q) +
+      (q.a.length > 1 ? "<p class=\"hint multi\">" + hintText(q) + "</p>" : "") +
+      "<ol class=\"ropts\">" + opts + "</ol>" + explainHTML(q) +
+    "</article>";
+  }
+
+  function applyFilter() {
+    let shown = 0;
+    document.querySelectorAll(".rv").forEach(el => {
+      const show = reviewFilter === "all" ||
+        (reviewFilter === "missed" && el.dataset.ok === "0") ||
+        (reviewFilter === "flagged" && el.dataset.flag === "1");
+      el.hidden = !show;
+      if (show) shown++;
+    });
+    document.querySelectorAll("[data-act=\"filter\"]").forEach(b => b.setAttribute("aria-pressed", b.dataset.f === reviewFilter ? "true" : "false"));
+    const empty = document.getElementById("rv-empty");
+    if (empty) empty.hidden = shown > 0;
+  }
+
+  /* ---------- events ---------- */
+  document.addEventListener("click", e => {
+    if (e.target.closest("[data-stop]") && !e.target.closest("[data-act]")) return;
+    const b = e.target.closest("[data-act]");
+    if (!b) return;
+    if (b.classList.contains("overlay") && e.target !== b) return;
+    const act = b.dataset.act;
+
+    switch (act) {
+      case "home": confirmOpen = false; go("home"); break;
+      case "resume": go("run"); break;
+      case "results": go("results"); break;
+      case "start-exam": startExam(); break;
+      case "start-practice": {
+        const secs = SEC_IDS.filter(s => { const c = document.getElementById("ps-" + s); return c && c.checked; });
+        const count = (document.getElementById("pcount") || {}).value || "20";
+        const err = document.getElementById("perr");
+        if (!secs.length) { if (err) err.hidden = false; return; }
+        store.set(PKEY, { secs, count });
+        startPractice(secs, count);
+        break;
+      }
+      case "practice-weak": startPractice([Number(b.dataset.s)], "20"); break;
+      case "discard":
+        if (b.dataset.armed) { S = null; clearInterval(tick); save(); render(); }
+        else { b.dataset.armed = "1"; b.textContent = "Select again to discard"; }
+        break;
+      case "prev": move(-1); break;
+      case "next": move(1); break;
+      case "goto": S.cur = Number(b.dataset.i); save(); render({ moved: true }); break;
+      case "flag": { const it = S.items[S.cur]; it.flagged = !it.flagged; save(); render(); const f = $app.querySelector(".btn-flag"); if (f) f.focus(); break; }
+      case "check": S.items[S.cur].checked = true; save(); render(); { const fb = $app.querySelector(".feedback"); if (fb) fb.scrollIntoView({ block: "nearest", behavior: reduceMotion ? "auto" : "smooth" }); } break;
+      case "submit": confirmOpen = true; render(); break;
+      case "cancel-submit": confirmOpen = false; render(); break;
+      case "confirm-submit": finish(false); break;
+      case "filter": reviewFilter = b.dataset.f; applyFilter(); break;
+      case "jump": {
+        const el = document.getElementById("rv-" + b.dataset.i);
+        if (el && el.hidden) { reviewFilter = "all"; applyFilter(); }
+        if (el) el.scrollIntoView({ block: "start", behavior: reduceMotion ? "auto" : "smooth" });
+        break;
+      }
+    }
+  });
+
+  document.addEventListener("change", e => {
+    if (e.target.matches && e.target.matches("input[name=\"opt\"]") && view === "run") pick(Number(e.target.value), false);
+  });
+
+  document.addEventListener("keydown", e => {
+    if (view !== "run" || !S || S.done || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (confirmOpen) { if (e.key === "Escape") { confirmOpen = false; render(); } return; }
+    const t = e.target;
+    if (t && (t.tagName === "SELECT" || t.tagName === "TEXTAREA" || (t.tagName === "INPUT" && !/^(radio|checkbox)$/.test(t.type)))) return;
+    const k = (e.key || "").toLowerCase();
+    const it = S.items[S.cur], q = byId[it.id];
+    const idx = k.length === 1 ? "abcde".indexOf(k) : -1;
+    if (idx >= 0 && idx < q.opts.length) { e.preventDefault(); pick(it.order[idx], true); return; }
+    if (k === "n") { e.preventDefault(); move(1); }
+    else if (k === "p") { e.preventDefault(); move(-1); }
+    else if (k === "f") { e.preventDefault(); it.flagged = !it.flagged; save(); render(); }
+  });
+
+  /* ---------- boot ---------- */
+  if (S && !validSession(S)) { S = null; save(); }
+  if (S && !S.done && S.mode === "exam" && Date.now() >= S.deadline) {
+    finish(true);
+  } else {
+    if (S && !S.done) view = "run";
+    render();
+    startTick();
+  }
+})();
+</script>
+</body>
+</html>
